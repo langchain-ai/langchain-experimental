@@ -1,0 +1,95 @@
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "langchain-experimental"
+version = "0.3.2rc1"
+description = "Building applications with LLMs through composability"
+authors = []
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/langchain-ai/langchain-experimental"
+
+[tool.mypy]
+ignore_missing_imports = "True"
+disallow_untyped_defs = "True"
+exclude = ["notebooks", "examples", "example_data"]
+
+[tool.poetry.urls]
+"Source Code" = "https://github.com/langchain-ai/langchain-experimental/tree/main/libs/experimental"
+"Release Notes" = "https://github.com/langchain-ai/langchain-experimental/releases"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+langchain-core = "^0.3.5"
+langchain-community = "^0.3.0"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "T201"]
+
+[tool.coverage.run]
+omit = ["tests/*"]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config --durations=5"
+markers = [
+    "requires: mark tests as requiring a specific library",
+    "asyncio: mark tests as requiring asyncio",
+    "compile: mark placeholder test used to compile integration tests without running them",
+]
+asyncio_mode = "auto"
+
+[tool.poetry.group.lint]
+optional = true
+
+[tool.poetry.group.typing]
+optional = true
+
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test_integration]
+optional = true
+
+[tool.poetry.group.lint.dependencies]
+ruff = "^0.5"
+
+[tool.poetry.group.typing.dependencies]
+mypy = "^1.10"
+types-pyyaml = "^6.0.12.2"
+types-requests = "^2.28.11.5"
+langchain = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/langchain" }
+langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core" }
+langchain-community = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/community" }
+
+[tool.poetry.group.dev.dependencies]
+jupyter = "^1.0.0"
+setuptools = "^67.6.1"
+langchain = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/langchain" }
+langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core" }
+langchain-community = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/community" }
+
+[tool.poetry.group.test.dependencies]
+pytest = "^7.3.0"
+pytest-asyncio = "^0.20.3"
+langchain = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/langchain" }
+langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core" }
+langchain-community = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/community" }
+langchain-text-splitters = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/text-splitters" }
+[[tool.poetry.group.test.dependencies.numpy]]
+version = "^1.24.0"
+python = "<3.12"
+
+[[tool.poetry.group.test.dependencies.numpy]]
+version = "^1.26.0"
+python = ">=3.12"
+
+[tool.poetry.group.test_integration.dependencies]
+langchain = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/langchain" }
+langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core" }
+langchain-community = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/community" }
+langchain-openai = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/partners/openai" }
