@@ -1581,7 +1581,7 @@ tenacity = "^8.1.0,!=8.4.0"
 type = "git"
 url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
-resolved_reference = "c750600d3d0cd5fa9d2d1141b60ff17ee327b6db"
+resolved_reference = "c6350d636e139bd9018f7225d3257c4be6139d54"
 subdirectory = "libs/langchain"
 
 [[package]]
@@ -1613,7 +1613,7 @@ tenacity = "^8.1.0,!=8.4.0"
 type = "git"
 url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
-resolved_reference = "c750600d3d0cd5fa9d2d1141b60ff17ee327b6db"
+resolved_reference = "c6350d636e139bd9018f7225d3257c4be6139d54"
 subdirectory = "libs/community"
 
 [[package]]
@@ -1641,7 +1641,7 @@ typing-extensions = ">=4.7"
 type = "git"
 url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
-resolved_reference = "c750600d3d0cd5fa9d2d1141b60ff17ee327b6db"
+resolved_reference = "c6350d636e139bd9018f7225d3257c4be6139d54"
 subdirectory = "libs/core"
 
 [[package]]
@@ -1662,7 +1662,7 @@ tiktoken = ">=0.7,<1"
 type = "git"
 url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
-resolved_reference = "c750600d3d0cd5fa9d2d1141b60ff17ee327b6db"
+resolved_reference = "c6350d636e139bd9018f7225d3257c4be6139d54"
 subdirectory = "libs/partners/openai"
 
 [[package]]
@@ -1681,7 +1681,7 @@ langchain-core = "^0.3.0"
 type = "git"
 url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
-resolved_reference = "c750600d3d0cd5fa9d2d1141b60ff17ee327b6db"
+resolved_reference = "c6350d636e139bd9018f7225d3257c4be6139d54"
 subdirectory = "libs/text-splitters"
 
 [[package]]
@@ -2158,13 +2158,13 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.48.0"
+version = "1.49.0"
 description = "The official Python library for the openai API"
 optional = false
 python-versions = ">=3.7.1"
 files = [
-    {file = "openai-1.48.0-py3-none-any.whl", hash = "sha256:7c4af223f0bf615ce4a12453729952c9a8b04ffe8c78aa77981b12fd970149cf"},
-    {file = "openai-1.48.0.tar.gz", hash = "sha256:1d3b69ea62c287c4885a6f3ce840768564cd5f52c60ac5f890fef80d43cc4799"},
+    {file = "openai-1.49.0-py3-none-any.whl", hash = "sha256:6efcf09bde703b991086603bc9c770ddea01ad57f1ded9bd735fd607e6e84c3c"},
+    {file = "openai-1.49.0.tar.gz", hash = "sha256:965e5c7cdf59277a8422250b1a81e683c9e7b10d28d4262b8daeeba4238202d4"},
 ]
 
 [package.dependencies]
@@ -3820,4 +3820,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "bab03d55f50e212c0c1814b8a55efa65d3722a9840edc8880b1cd46296ae1857"
+content-hash = "4cf7e298c58d6f68b961deaeae6dfce1bf2a4db48cd0a1b4956ba90137d6d423"
