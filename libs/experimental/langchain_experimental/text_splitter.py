@@ -117,6 +117,7 @@ class SemanticChunker(BaseDocumentTransformer):
         breakpoint_threshold_amount: Optional[float] = None,
         number_of_chunks: Optional[int] = None,
         sentence_split_regex: str = r"(?<=[.?!])\s+",
+        min_chunk_size: Optional[int] = None,
     ):
         self._add_start_index = add_start_index
         self.embeddings = embeddings
@@ -130,6 +131,7 @@ class SemanticChunker(BaseDocumentTransformer):
             ]
         else:
             self.breakpoint_threshold_amount = breakpoint_threshold_amount
+        self.min_chunk_size = min_chunk_size
 
     def _calculate_breakpoint_threshold(
         self, distances: List[float]
@@ -250,6 +252,12 @@ class SemanticChunker(BaseDocumentTransformer):
             # Slice the sentence_dicts from the current start index to the end index
             group = sentences[start_index : end_index + 1]
             combined_text = " ".join([d["sentence"] for d in group])
+            # If specified, merge together small chunks.
+            if (
+                self.min_chunk_size is not None
+                and len(combined_text) < self.min_chunk_size
+            ):
+                continue
             chunks.append(combined_text)
 
             # Update the start index for the next group
