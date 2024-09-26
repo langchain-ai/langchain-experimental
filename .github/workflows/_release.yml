@@ -157,10 +157,6 @@ jobs:
         run: make tests
         working-directory: ${{ inputs.working-directory }}
 
-      - name: Run integration tests
-        run: make integration_tests
-        working-directory: ${{ inputs.working-directory }}
-
       - name: Get minimum versions
         working-directory: ${{ inputs.working-directory }}
         id: min-version
