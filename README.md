@@ -1,8 +1,8 @@
-# 🦜️🔗 LangChain {partner}
+# 🦜️🔗 LangChain Experimental
 
-This repository contains 1 package with {partner} integrations with LangChain:
+This repository contains 1 package with Experimental integrations with LangChain:
 
-- [langchain-{package_lower}](https://pypi.org/project/langchain-{package_lower}/)
+- [langchain-experimental](https://pypi.org/project/langchain-experimental/)
 
 ## Initial Repo Checklist (Remove this section after completing)
 
@@ -55,5 +55,5 @@ Slack
 - [ ] Set up release alerting in Slack (ask Erick for help)
 
 release:
-/github subscribe langchain-ai/langchain-{partner_lower} releases workflows:{name:"release"}
-/github unsubscribe langchain-ai/langchain-{partner_lower} issues pulls commits deployments
+/github subscribe langchain-ai/langchain-experimental releases workflows:{name:"release"}
+/github unsubscribe langchain-ai/langchain-experimental issues pulls commits deployments
