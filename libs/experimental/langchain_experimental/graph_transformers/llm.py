@@ -753,7 +753,8 @@ class LLMGraphTransformer:
             for rel in parsed_json:
                 # Check if mandatory properties are there
                 if (
-                    not rel.get("head")
+                    not isinstance(rel, dict)
+                    or not rel.get("head")
                     or not rel.get("tail")
                     or not rel.get("relation")
                 ):
