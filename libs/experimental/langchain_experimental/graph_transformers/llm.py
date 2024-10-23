@@ -686,12 +686,12 @@ def validate_and_get_relationship_type(
         and item[2] in allowed_nodes
         for item in allowed_relationships
     ):
-        # Valid: all items are 3-tuples, and the first/last elements are in allowed_nodes.
+        # all items are 3-tuples, and the first/last elements are in allowed_nodes.
         return "tuple"
 
     # If the input doesn't match any of the valid cases, raise a ValueError
     raise ValueError(
-        "`allowed_relationships` must be either a list of strings or a list of 3-item tuples. "
+        "`allowed_relationships` must be list of strings or a list of 3-item tuples. "
         "For tuples, the first and last elements must be in the `allowed_nodes` list."
     )
 
