@@ -161,7 +161,7 @@ def optional_enum_field(
     parsed_enum_values = enum_values
     # We have to extract enum types from tuples
     if relationship_type == "tuple":
-        parsed_enum_values = list({el[1] for el in enum_values})
+        parsed_enum_values = list({el[1] for el in enum_values})  # type: ignore
 
     # Only openai supports enum param
     if enum_values and llm_type == "openai-chat":
@@ -211,7 +211,7 @@ class UnstructuredRelation(BaseModel):
 
 def create_unstructured_prompt(
     node_labels: Optional[List[str]] = None,
-    rel_types: Optional[List[str]] = None,
+    rel_types: Optional[Union[List[str], List[Tuple[str, str, str]]]] = None,
     relationship_type: Optional[str] = None,
 ) -> ChatPromptTemplate:
     node_labels_str = str(node_labels) if node_labels else ""
@@ -317,7 +317,7 @@ def create_unstructured_prompt(
 
 def create_simple_model(
     node_labels: Optional[List[str]] = None,
-    rel_types: Optional[List[str]] = None,
+    rel_types: Optional[Union[List[str], List[Tuple[str, str, str]]]] = None,
     node_properties: Union[bool, List[str]] = False,
     llm_type: Optional[str] = None,
     relationship_properties: Union[bool, List[str]] = False,
@@ -382,7 +382,13 @@ def create_simple_model(
                 input_type="property",
                 llm_type=llm_type,
             )
-            value: str = Field(..., description="value")
+            value: str = Field(
+                ...,
+                description=(
+                    "Extracted value. Any date value "
+                    "should be formatted as yyyy-mm-dd."
+                ),
+            )
 
         node_fields["properties"] = (
             Optional[List[Property]],
@@ -456,7 +462,13 @@ def create_simple_model(
                 input_type="property",
                 llm_type=llm_type,
             )
-            value: str = Field(..., description="value")
+            value: str = Field(
+                ...,
+                description=(
+                    "Extracted value. Any date value "
+                    "should be formatted as yyyy-mm-dd."
+                ),
+            )
 
         relationship_fields["properties"] = (
             Optional[List[RelationshipProperty]],
@@ -682,8 +694,8 @@ def validate_and_get_relationship_type(
         isinstance(item, tuple)
         and len(item) == 3
         and all(isinstance(subitem, str) for subitem in item)
-        and item[0] in allowed_nodes
-        and item[2] in allowed_nodes
+        and item[0] in allowed_nodes  # type: ignore
+        and item[2] in allowed_nodes  # type: ignore
         for item in allowed_relationships
     ):
         # all items are 3-tuples, and the first/last elements are in allowed_nodes.
@@ -879,9 +891,9 @@ class LLMGraphTransformer:
                                 rel.type.lower(),
                                 rel.target.type.lower(),
                             )
-                            in [
-                                (src_type.lower(), rel_type.lower(), tgt_type.lower())
-                                for src_type, rel_type, tgt_type in self.allowed_relationships
+                            in [  # type: ignore
+                                (s_t.lower(), r_t.lower(), t_t.lower())
+                                for s_t, r_t, t_t in self.allowed_relationships
                             ]
                         )
                     ]
@@ -890,7 +902,7 @@ class LLMGraphTransformer:
                         rel
                         for rel in relationships
                         if rel.type.lower()
-                        in [el.lower() for el in self.allowed_relationships]
+                        in [el.lower() for el in self.allowed_relationships]  # type: ignore
                     ]
 
         return GraphDocument(nodes=nodes, relationships=relationships, source=document)
@@ -980,9 +992,9 @@ class LLMGraphTransformer:
                                 rel.type.lower(),
                                 rel.target.type.lower(),
                             )
-                            in [
-                                (src_type.lower(), rel_type.lower(), tgt_type.lower())
-                                for src_type, rel_type, tgt_type in self.allowed_relationships
+                            in [  # type: ignore
+                                (s_t.lower(), r_t.lower(), t_t.lower())
+                                for s_t, r_t, t_t in self.allowed_relationships
                             ]
                         )
                     ]
@@ -991,7 +1003,7 @@ class LLMGraphTransformer:
                         rel
                         for rel in relationships
                         if rel.type.lower()
-                        in [el.lower() for el in self.allowed_relationships]
+                        in [el.lower() for el in self.allowed_relationships]  # type: ignore
                     ]
 
         return GraphDocument(nodes=nodes, relationships=relationships, source=document)
