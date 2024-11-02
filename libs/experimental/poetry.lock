@@ -1618,7 +1618,7 @@ subdirectory = "libs/community"
 
 [[package]]
 name = "langchain-core"
-version = "0.3.6"
+version = "0.3.15"
 description = "Building applications with LLMs through composability"
 optional = false
 python-versions = ">=3.9,<4.0"
@@ -1634,14 +1634,14 @@ pydantic = [
     {version = ">=2.7.4,<3.0.0", markers = "python_full_version >= \"3.12.4\""},
 ]
 PyYAML = ">=5.3"
-tenacity = "^8.1.0,!=8.4.0"
+tenacity = ">=8.1.0,!=8.4.0,<10.0.0"
 typing-extensions = ">=4.7"
 
 [package.source]
 type = "git"
 url = "https://github.com/langchain-ai/langchain.git"
 reference = "HEAD"
-resolved_reference = "c6350d636e139bd9018f7225d3257c4be6139d54"
+resolved_reference = "3b0b7cfb7455c973e73dbd00a42fda65a33a9286"
 subdirectory = "libs/core"
 
 [[package]]
@@ -3820,4 +3820,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = ">=3.9,<4.0"
-content-hash = "4cf7e298c58d6f68b961deaeae6dfce1bf2a4db48cd0a1b4956ba90137d6d423"
+content-hash = "d9073d6d37dc260e6c1e404aa38153454fd62ee2501ac9bb14527298810a742b"
