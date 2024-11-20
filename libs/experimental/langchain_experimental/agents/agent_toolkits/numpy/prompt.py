@@ -1,5 +1,4 @@
 # flake8: noqa
-
 PREFIX = """
 You are working with a NumPy array in Python. The name of the array is `arr`.
 You should use the tools below to answer the question posed of you:"""

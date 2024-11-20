@@ -1,1 +1,1 @@
-"""Numpy array agent toolkit"""
+"""Numpy objects agent toolkit"""

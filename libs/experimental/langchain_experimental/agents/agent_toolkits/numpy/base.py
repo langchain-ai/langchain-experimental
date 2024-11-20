@@ -1,5 +1,6 @@
 """Agent for working with NumPy objects."""
 
+
 import warnings
 from typing import Any, Dict, List, Literal, Optional, Sequence, Union, cast
 
