@@ -108,7 +108,7 @@ system_prompt = (
 
 
 def get_default_prompt(
-    additional_instructions: Optional[str] = ""
+    additional_instructions: Optional[str] = "",
 ) -> ChatPromptTemplate:
     return ChatPromptTemplate.from_messages(
         [
