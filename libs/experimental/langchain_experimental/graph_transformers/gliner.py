@@ -54,21 +54,21 @@ class GlinerGraphTransformer:
             import gliner_spacy  # type: ignore # noqa: F401
         except ImportError:
             raise ImportError(
-                "Could not import relik python package. "
+                "Could not import gliner-spacy python package. "
                 "Please install it with `pip install gliner-spacy`."
             )
         try:
             import spacy  # type: ignore
         except ImportError:
             raise ImportError(
-                "Could not import relik python package. "
+                "Could not import spacy python package. "
                 "Please install it with `pip install spacy`."
             )
         try:
             import glirel  # type: ignore # noqa: F401
         except ImportError:
             raise ImportError(
-                "Could not import relik python package. "
+                "Could not import gliner python package. "
                 "Please install it with `pip install gliner`."
             )
 
@@ -101,15 +101,17 @@ class GlinerGraphTransformer:
                 [(document.page_content, self.allowed_relationships)], as_tuples=True
             )
         )
-        # Convert nodes
-        nodes = []
-        for node in docs[0][0].ents:
-            nodes.append(
-                Node(
-                    id=node.text,
-                    type=node.label_,
-                )
+        # Deduplicate nodes
+        deduplicated_nodes = {(node.text, node.label_) for node in docs[0][0].ents}
+
+        # Step 2: Convert back to Node objects
+        nodes = [
+            Node(
+                id=node_text,
+                type=node_label,
             )
+            for node_text, node_label in deduplicated_nodes
+        ]
         # Convert relationships
         relationships = []
         relations = docs[0][0]._.relations
