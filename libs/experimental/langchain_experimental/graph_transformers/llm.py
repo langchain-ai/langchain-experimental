@@ -106,23 +106,23 @@ system_prompt = (
     "Adhere to the rules strictly. Non-compliance will result in termination."
 )
 
-default_prompt = ChatPromptTemplate.from_messages(
-    [
-        (
-            "system",
-            system_prompt,
-        ),
-        (
-            "human",
+
+def get_default_prompt(
+    additional_instructions: str = "",
+) -> ChatPromptTemplate:
+    return ChatPromptTemplate.from_messages(
+        [
+            ("system", system_prompt),
             (
-                "Tip: Make sure to answer in the correct format and do "
+                "human",
+                additional_instructions
+                + " Tip: Make sure to answer in the correct format and do "
                 "not include any explanations. "
                 "Use the given format to extract information from the "
-                "following input: {input}"
+                "following input: {input}",
             ),
-        ),
-    ]
-)
+        ]
+    )
 
 
 def _get_additional_info(input_type: str) -> str:
@@ -213,6 +213,7 @@ def create_unstructured_prompt(
     node_labels: Optional[List[str]] = None,
     rel_types: Optional[Union[List[str], List[Tuple[str, str, str]]]] = None,
     relationship_type: Optional[str] = None,
+    additional_instructions: Optional[str] = "",
 ) -> ChatPromptTemplate:
     node_labels_str = str(node_labels) if node_labels else ""
     if rel_types:
@@ -259,7 +260,8 @@ def create_unstructured_prompt(
         "that entity. The knowledge graph should be coherent and easily "
         "understandable, so maintaining consistency in entity references is "
         "crucial.",
-        "IMPORTANT NOTES:\n- Don't add any explanation and text.",
+        "IMPORTANT NOTES:\n- Don't add any explanation and text. ",
+        additional_instructions,
     ]
     system_prompt = "\n".join(filter(None, base_string_parts))
 
@@ -290,7 +292,8 @@ def create_unstructured_prompt(
         else "",
         "Below are a number of examples of text and their extracted "
         "entities and relationships."
-        "{examples}\n"
+        "{examples}\n",
+        additional_instructions,
         "For the following text, extract entities and relations as "
         "in the provided example."
         "{format_instructions}\nText: {input}",
@@ -739,6 +742,8 @@ class LLMGraphTransformer:
           bypass the use of structured output functionality of the language model.
           If set to True, the transformer will not use the language model's native
           function calling capabilities to handle structured output. Defaults to False.
+        additional_instructions (str): Allows you to add additional instructions
+          to the prompt without having to change the whole prompt.
 
     Example:
         .. code-block:: python
@@ -765,6 +770,7 @@ class LLMGraphTransformer:
         node_properties: Union[bool, List[str]] = False,
         relationship_properties: Union[bool, List[str]] = False,
         ignore_tool_usage: bool = False,
+        additional_instructions: str = "",
     ) -> None:
         # Validate and check allowed relationships input
         self._relationship_type = validate_and_get_relationship_type(
@@ -798,7 +804,10 @@ class LLMGraphTransformer:
                     "Please install it with `pip install json-repair`."
                 )
             prompt = prompt or create_unstructured_prompt(
-                allowed_nodes, allowed_relationships, self._relationship_type
+                allowed_nodes,
+                allowed_relationships,
+                self._relationship_type,
+                additional_instructions,
             )
             self.chain = prompt | llm
         else:
@@ -816,7 +825,7 @@ class LLMGraphTransformer:
                 self._relationship_type,
             )
             structured_llm = llm.with_structured_output(schema, include_raw=True)
-            prompt = prompt or default_prompt
+            prompt = prompt or get_default_prompt(additional_instructions)
             self.chain = prompt | structured_llm
 
     def process_response(
