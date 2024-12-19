@@ -1,5 +1,6 @@
 import sys
 
+import boto3
 import pytest
 from moto import mock_aws
 
@@ -12,6 +13,9 @@ from tests.unit_tests.fake_llm import FakeLLM
 @mock_aws
 def test_create_pandas_dataframe_agent() -> None:
     import pandas as pd
+
+    # Set up AWS region
+    boto3.setup_default_session(region_name="us-east-1")
 
     with pytest.raises(ValueError):
         create_pandas_dataframe_agent(
