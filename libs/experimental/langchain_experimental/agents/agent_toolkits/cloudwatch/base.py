@@ -1,3 +1,4 @@
+import os
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
 
@@ -14,8 +15,12 @@ from langchain_experimental.agents.agent_toolkits.cloudwatch.prompt import (
     SUFFIX,
 )
 
+DEFAULT_REGION = "us-east-1"
+
+region_name = os.getenv("AWS_REGION", DEFAULT_REGION)
+
 # Initialize the boto3 client for CloudWatch Logs
-cloudwatch_logs_client = boto3.client("logs")
+cloudwatch_logs_client = boto3.client("logs", region_name=region_name)
 
 
 def _validate_cloudwatch_client(client: Any) -> bool:
