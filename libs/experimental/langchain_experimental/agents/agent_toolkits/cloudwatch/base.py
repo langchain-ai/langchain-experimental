@@ -27,7 +27,7 @@ def _validate_cloudwatch_client(client: Any) -> bool:
         return False
 
 
-def _validate_aws_credentials():
+def _validate_aws_credentials() -> None:
     try:
         boto3.client("sts").get_caller_identity()
     except (NoCredentialsError, PartialCredentialsError):
