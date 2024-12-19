@@ -1,7 +1,7 @@
 import sys
 
 import pytest
-from moto import mock_s3
+from moto import mock_aws
 
 from langchain_experimental.agents import create_pandas_dataframe_agent
 from tests.unit_tests.fake_llm import FakeLLM
@@ -9,7 +9,7 @@ from tests.unit_tests.fake_llm import FakeLLM
 
 @pytest.mark.requires("pandas", "tabulate")
 @pytest.mark.skipif(sys.version_info < (3, 9), reason="requires python3.9 or higher")
-@mock_s3
+@mock_aws
 def test_create_pandas_dataframe_agent() -> None:
     import pandas as pd
 
