@@ -1,14 +1,21 @@
+from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
+
+import boto3
+from botocore.exceptions import NoCredentialsError, PartialCredentialsError
 from langchain.agents.agent import AgentExecutor
 from langchain.agents.mrkl.base import ZeroShotAgent
 from langchain.chains.llm import LLMChain
 from langchain_core.callbacks.base import BaseCallbackManager
 from langchain_core.language_models import BaseLLM
-from langchain.prompts import PromptTemplate
-from boto3 import client
-from datetime import datetime, timedelta
 
-from langchain_experimental.agents.agent_toolkits.cloudwatch.prompt import PREFIX, SUFFIX
+from langchain_experimental.agents.agent_toolkits.cloudwatch.prompt import (
+    PREFIX,
+    SUFFIX,
+)
+
+# Initialize the boto3 client for CloudWatch Logs
+cloudwatch_logs_client = boto3.client("logs")
 
 
 def _validate_cloudwatch_client(client: Any) -> bool:
@@ -19,8 +26,19 @@ def _validate_cloudwatch_client(client: Any) -> bool:
     except Exception:
         return False
 
+
+def _validate_aws_credentials():
+    try:
+        boto3.client("sts").get_caller_identity()
+    except (NoCredentialsError, PartialCredentialsError):
+        raise ValueError("AWS credentials are not configured properly.")
+
+
 def fetch_cloudwatch_logs(
-    cloudwatch_client: Any, log_group_name: str, start_time: datetime, end_time: datetime
+    cloudwatch_client: Any,
+    log_group_name: str,
+    start_time: datetime,
+    end_time: datetime,
 ) -> str:
     """Fetches logs from AWS CloudWatch."""
     try:
@@ -31,12 +49,14 @@ def fetch_cloudwatch_logs(
         )
         error_keywords = ["ERROR", "Exception", "Traceback"]
         logs = "\n".join(
-            event["message"] for event in response.get("events", [])
+            event["message"]
+            for event in response.get("events", [])
             if any(keyword in event["message"] for keyword in error_keywords)
         )
         return logs
     except Exception as e:
         raise ValueError(f"Error fetching logs: {e}")
+
 
 def create_cloudwatch_logs_agent(
     llm: BaseLLM,
@@ -61,16 +81,20 @@ def create_cloudwatch_logs_agent(
     if not _validate_cloudwatch_client(cloudwatch_client):
         raise ValueError("Invalid CloudWatch client provided.")
 
+    _validate_aws_credentials()
+
     if input_variables is None:
         input_variables = ["logs", "input", "agent_scratchpad"]
 
     # Fetch recent logs
     now = datetime.utcnow()
     ten_minutes_ago = now - timedelta(minutes=10)
-    logs = fetch_cloudwatch_logs(cloudwatch_client, log_group_name, ten_minutes_ago, now)
+    logs = fetch_cloudwatch_logs(
+        cloudwatch_client, log_group_name, ten_minutes_ago, now
+    )
 
     # Prompt and tools
-    tools = []
+    tools: list = []
     prompt = ZeroShotAgent.create_prompt(
         tools, prefix=prefix, suffix=suffix, input_variables=input_variables
     )
