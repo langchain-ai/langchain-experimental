@@ -72,11 +72,11 @@ setuptools = "^67.6.1"
 langchain = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/langchain" }
 langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core" }
 langchain-community = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/community" }
-boto3 = "^1.35.84"
 
 [tool.poetry.group.test.dependencies]
 pytest = "^7.3.0"
 pytest-asyncio = "^0.20.3"
+boto3 = "^1.35.84"
 langchain = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/langchain" }
 langchain-core = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/core" }
 langchain-community = { git = "https://github.com/langchain-ai/langchain.git", subdirectory = "libs/community" }
