@@ -208,12 +208,15 @@ class SemanticChunker(BaseDocumentTransformer):
 
         return calculate_cosine_distances(sentences)
 
+    def _get_single_sentences_list(self, text: str) -> List[str]:
+        return re.split(self.sentence_split_regex, text)
+
     def split_text(
         self,
         text: str,
     ) -> List[str]:
         # Splitting the essay (by default on '.', '?', and '!')
-        single_sentences_list = re.split(self.sentence_split_regex, text)
+        single_sentences_list = self._get_single_sentences_list(text)
 
         # having len(single_sentences_list) == 1 would cause the following
         # np.percentile to fail.
