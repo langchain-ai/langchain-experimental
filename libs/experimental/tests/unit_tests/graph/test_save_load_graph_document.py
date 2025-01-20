@@ -8,8 +8,9 @@ from langchain_experimental.graph_transformers import LLMGraphTransformer
 llm = ChatOpenAI(temperature=0, model_name="gpt-4o-2024-08-06")
 llm_transformer = LLMGraphTransformer(llm=llm)
 
+
 def test_save_load_graph_document() -> None:
-    """ Test to check if the graph document is saved and loaded correctly """
+    """Test to check if the graph document is saved and loaded correctly"""
     text = """
       Marie Curie, born in 1867, was a Polish and naturalised-French physicist and chemist who conducted pioneering research on radioactivity.
       She was the first woman to win a Nobel Prize, the first person to win a Nobel Prize twice, and the only person to win a Nobel Prize in two scientific fields.
