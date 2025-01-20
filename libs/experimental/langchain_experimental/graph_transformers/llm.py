@@ -1,5 +1,7 @@
 import asyncio
 import json
+import os
+import pickle
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Type, Union, cast
 
 from langchain_community.graphs.graph_document import GraphDocument, Node, Relationship
@@ -930,6 +932,41 @@ class LLMGraphTransformer:
             Sequence[GraphDocument]: The transformed documents as graphs.
         """
         return [self.process_response(document, config) for document in documents]
+
+    def save_graph_documents(
+        self,
+        graph_documents: List[GraphDocument],
+        file_name: str = "graph_document.pkl",
+    ) -> None:
+        """
+        Serializing the graph documents to a file
+        """
+        # get the current working directory
+        project_dir = os.getcwd()
+        intermediate_file_path = os.path.join(project_dir, file_name)
+        # open the file in write binary mode
+        with open(intermediate_file_path, "wb") as db_file:
+            pickle.dump(graph_documents, db_file)
+        file_path = os.path.abspath(db_file.name)
+        print(f"Graph documents saved to {file_path}")  # noqa: T201
+
+    def load_graph_documents(
+        self, file_name: str = "graph_document.pkl"
+    ) -> List[GraphDocument]:
+        """
+        Deserializing the graph documents from a file
+        """
+        # get the current working directory
+        project_dir = os.getcwd()
+        intermediate_file_path = os.path.join(project_dir, file_name)
+        # handling if user provides the full path
+        if not os.path.exists(file_name):
+            intermediate_file_path = file_name
+        # open the file in read binary mode
+        graph_documents = []
+        with open(intermediate_file_path, "rb") as db_file:
+            graph_documents = pickle.load(db_file)
+        return graph_documents
 
     async def aprocess_response(
         self, document: Document, config: Optional[RunnableConfig] = None
