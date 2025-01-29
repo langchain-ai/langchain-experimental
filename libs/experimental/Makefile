@@ -10,7 +10,7 @@ test:
 	uv run --group test pytest $(TEST_FILE)
 
 tests:
-	uv run -- group test pytest $(TEST_FILE)
+	uv run --group test pytest $(TEST_FILE)
 
 test_watch:
 	uv run --group test ptw --now . -- tests/unit_tests
