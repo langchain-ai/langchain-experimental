@@ -9,7 +9,7 @@ on:
         description: "From which folder this pipeline executes"
 
 env:
-  POETRY_VERSION: "1.7.1"
+  UV_VERSION: "0.5.25"
 
 jobs:
   build:
@@ -20,25 +20,23 @@ jobs:
     strategy:
       matrix:
         python-version:
-          - "3.8"
           - "3.9"
           - "3.10"
           - "3.11"
+          - "3.12"
     name: "make test #${{ matrix.python-version }}"
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }} + Poetry ${{ env.POETRY_VERSION }}
-        uses: "./.github/actions/poetry_setup"
+      - name: Set up Python ${{ matrix.python-version }} + uv ${{ env.UV_VERSION }}
+        uses: "./.github/actions/uv_setup"
         with:
           python-version: ${{ matrix.python-version }}
-          poetry-version: ${{ env.POETRY_VERSION }}
-          working-directory: ${{ inputs.working-directory }}
-          cache-key: core
+          poetry-version: ${{ env.UV_VERSION }}
 
       - name: Install dependencies
         shell: bash
-        run: poetry install --with test
+        run: uv sync --all-extras --dev
 
       - name: Run core tests
         shell: bash
