@@ -59,6 +59,7 @@ jobs:
         shell: python
         working-directory: ${{ inputs.working-directory }}
         run: |
+          import os
           import tomllib
           with open("pyproject.toml", "rb") as f:
               data = tomllib.load(f)
