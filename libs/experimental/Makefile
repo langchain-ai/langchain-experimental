@@ -7,22 +7,22 @@ all: help
 TEST_FILE ?= tests/unit_tests/
 
 test:
-	poetry run pytest $(TEST_FILE)
+	uv run --group test pytest $(TEST_FILE)
 
 tests:
-	poetry run pytest $(TEST_FILE)
+	uv run -- group test pytest $(TEST_FILE)
 
 test_watch:
-	poetry run ptw --now . -- tests/unit_tests
+	uv run --group test ptw --now . -- tests/unit_tests
 
 extended_tests:
-	poetry run pytest --only-extended tests/unit_tests
+	uv run --group test pytest --only-extended tests/unit_tests
 
 integration_tests:
-	poetry run pytest tests/integration_tests
+	uv run --group test_integration pytest tests/integration_tests
 
 check_imports: $(shell find langchain_experimental -name '*.py')
-	poetry run python ./scripts/check_imports.py $^
+	uv run python ./scripts/check_imports.py $^
 
 
 ######################
@@ -39,19 +39,19 @@ lint_tests: PYTHON_FILES=tests
 lint_tests: MYPY_CACHE=.mypy_cache_test
 
 lint lint_diff lint_package lint_tests:
-	[ "$(PYTHON_FILES)" = "" ] || poetry run ruff check $(PYTHON_FILES)
-	[ "$(PYTHON_FILES)" = "" ] || poetry run ruff format $(PYTHON_FILES) --diff
-	[ "$(PYTHON_FILES)" = "" ] || mkdir -p $(MYPY_CACHE) && poetry run mypy $(PYTHON_FILES) --cache-dir $(MYPY_CACHE)
+	[ "$(PYTHON_FILES)" = "" ] || uv run --all-groups ruff check $(PYTHON_FILES)
+	[ "$(PYTHON_FILES)" = "" ] || uv run --all-groups ruff format $(PYTHON_FILES) --diff
+	[ "$(PYTHON_FILES)" = "" ] || mkdir -p $(MYPY_CACHE) && uv run --all-groups mypy $(PYTHON_FILES) --cache-dir $(MYPY_CACHE)
 
 format format_diff:
-	[ "$(PYTHON_FILES)" = "" ] || poetry run ruff format $(PYTHON_FILES)
-	[ "$(PYTHON_FILES)" = "" ] || poetry run ruff check --select I --fix $(PYTHON_FILES)
+	[ "$(PYTHON_FILES)" = "" ] || uv run --all-groups ruff format $(PYTHON_FILES)
+	[ "$(PYTHON_FILES)" = "" ] || uv run --all-groups ruff check --select I --fix $(PYTHON_FILES)
 
 spell_check:
-	poetry run codespell --toml pyproject.toml
+	uv run --all-groups codespell --toml pyproject.toml
 
 spell_fix:
-	poetry run codespell --toml pyproject.toml -w
+	uv run --all-groups codespell --toml pyproject.toml -w
 
 ######################
 # HELP
