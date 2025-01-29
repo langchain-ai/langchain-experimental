@@ -131,11 +131,13 @@ jobs:
           uv venv
           uv pip install \
             --extra-index-url https://test.pypi.org/simple/ \
+            --no-deps \
             "$PKG_NAME==$VERSION" || \
           ( \
             sleep 5 && \
             uv pip install \
               --extra-index-url https://test.pypi.org/simple/ \
+              --no-deps \
               "$PKG_NAME==$VERSION" \
           )
 
@@ -159,6 +161,7 @@ jobs:
         run: |
           uv pip install \
             --extra-index-url https://test.pypi.org/simple/ \
+            --no-deps \
             "$PKG_NAME==$VERSION"
 
       - name: Run unit tests
