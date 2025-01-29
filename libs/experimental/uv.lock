@@ -1304,7 +1304,7 @@ dependencies = [
 
 [[package]]
 name = "langchain-experimental"
-version = "0.3.4"
+version = "0.3.5rc1"
 source = { editable = "." }
 dependencies = [
     { name = "langchain-community" },
