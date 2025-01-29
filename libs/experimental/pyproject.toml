@@ -11,7 +11,7 @@ dependencies = [
     "langchain-community<1.0.0,>=0.3.0",
 ]
 name = "langchain-experimental"
-version = "0.3.4"
+version = "0.3.5rc1"
 description = "Building applications with LLMs through composability"
 readme = "README.md"
 
