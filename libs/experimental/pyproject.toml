@@ -24,7 +24,7 @@ asyncio_mode = "auto"
 
 [tool.pdm.dev-dependencies]
 lint = [
-    "ruff<1.0,>=0.5",
+    "ruff<0.6,>=0.5",
 ]
 typing = [
     "mypy<2.0,>=1.10",
@@ -81,7 +81,7 @@ repository = "https://github.com/langchain-ai/langchain-experimental"
 
 [dependency-groups]
 lint = [
-    "ruff<1.0,>=0.5",
+    "ruff<0.6,>=0.5",
 ]
 typing = [
     "mypy<2.0,>=1.10",
