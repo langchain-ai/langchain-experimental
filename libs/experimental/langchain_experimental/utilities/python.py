@@ -20,8 +20,8 @@ def warn_once() -> None:
 class PythonREPL(BaseModel):
     """Simulates a standalone Python REPL."""
 
-    globals: Optional[Dict] = Field(default_factory=dict, alias="_globals")
-    locals: Optional[Dict] = Field(default_factory=dict, alias="_locals")
+    globals: Optional[Dict] = Field(default_factory=dict, alias="_globals")  # type: ignore[arg-type]
+    locals: Optional[Dict] = Field(default_factory=dict, alias="_locals")  # type: ignore[arg-type]
 
     @staticmethod
     def sanitize_input(query: str) -> str:
