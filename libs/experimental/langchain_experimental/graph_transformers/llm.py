@@ -771,6 +771,7 @@ class LLMGraphTransformer:
         relationship_properties: Union[bool, List[str]] = False,
         ignore_tool_usage: bool = False,
         additional_instructions: str = "",
+        method: str = "json_schema"
     ) -> None:
         # Validate and check allowed relationships input
         self._relationship_type = validate_and_get_relationship_type(
@@ -784,7 +785,7 @@ class LLMGraphTransformer:
         # Check if the LLM really supports structured output
         if self._function_call:
             try:
-                llm.with_structured_output(_Graph)
+                llm.with_structured_output(_Graph, method=method)
             except NotImplementedError:
                 self._function_call = False
         if not self._function_call:
@@ -824,7 +825,7 @@ class LLMGraphTransformer:
                 relationship_properties,
                 self._relationship_type,
             )
-            structured_llm = llm.with_structured_output(schema, include_raw=True)
+            structured_llm = llm.with_structured_output(schema, method=method, include_raw=True)
             prompt = prompt or get_default_prompt(additional_instructions)
             self.chain = prompt | structured_llm
 
