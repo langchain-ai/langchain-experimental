@@ -825,7 +825,11 @@ class LLMGraphTransformer:
                 relationship_properties,
                 self._relationship_type,
             )
-            structured_llm = llm.with_structured_output(schema, method=method, include_raw=True)
+            structured_llm = llm.with_structured_output(
+                schema, 
+                method=method,
+                include_raw=True
+            )
             prompt = prompt or get_default_prompt(additional_instructions)
             self.chain = prompt | structured_llm
 
