@@ -314,9 +314,9 @@ def create_unstructured_prompt(
         f'"tail_type" must be one of {property_types_str}.'
         if property_types
         else "",
-        'The "relation_properties" key must contain any additional properties associated'
-        'with the relationship itself. Allowed relationship properties include: '
-        f'{rels_property_types_str}.'
+        'The "relation_properties" key must contain any additional properties '
+        'associated with the relationship itself. Allowed relationship '
+        f'properties include: {rels_property_types_str}.'
         if rels_property_types
         else "",
         "Your task is to extract relationships from text strictly adhering "
