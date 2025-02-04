@@ -290,28 +290,33 @@ def create_unstructured_prompt(
         "You must generate the output in a JSON format containing a list "
         'with JSON objects. Each object should have the keys: "head", '
         '"head_type", "relation", "tail", "tail_type", and "relation_properties". '
-        'The "head" key must contain the text of the extracted entity with one of the types '
-        "from the provided list in the user prompt.",
-        f'The "head_type" key must contain the type of the extracted head entity, '
+        'The "head" key must contain the text of the extracted entity with one of '
+        "the types from the provided list in the user prompt.",
+        'The "head_type" key must contain the type of the extracted head entity, '
         f"which must be one of the types from {node_labels_str}."
         if node_labels
         else "",
-        f'The "relation" key must indicate the type of relationship between the head and tail. '
-        f'For attribute relationships, use "HAS_PROPERTY", and for entity-to-entity relationships, '
-        f'choose one of the types from {rel_types_str}.'
+        'The "relation" key must indicate the type of relationship between the head '
+        'and tail. For attribute relationships, use "HAS_PROPERTY", and for '
+        'entity-to-entity relationships, choose one of the types '
+        f'from {rel_types_str}.'
         if rel_types
         else "",
-        f'The "tail" key must represent either the text of an extracted entity in a relationship or the value of a property. '
+        'The "tail" key must represent either the text of an extracted entity in a '
+        'relationship or the value of a property. '
         if node_labels or property_types
         else "",
-        f'For entity relationships, the "tail_type" must be one of the entity types from {node_labels_str}. '  
+        'For entity relationships, the "tail_type" must be one of the entity types '
+        f'from {node_labels_str}. '  
         if node_labels
         else "",
-        f'For properties/attributes, the relation must be "HAS_PROPERTY", and the "tail_type" must be one of {property_types_str}.'
+        'For properties/attributes, the relation must be "HAS_PROPERTY", and the '
+        f'"tail_type" must be one of {property_types_str}.'
         if property_types
         else "",
-        f'The "relation_properties" key must contain any additional properties associated with the relationship itself. '
-        f'Allowed relationship properties include: {rels_property_types_str}.'
+        'The "relation_properties" key must contain any additional properties associated'
+        'with the relationship itself. Allowed relationship properties include: '
+        f'{rels_property_types_str}.'
         if rels_property_types
         else "",
         "Your task is to extract relationships from text strictly adhering "
@@ -358,8 +363,8 @@ def create_unstructured_prompt(
         "# PROPERTY TYPES:"
         "{property_types}" 
         if property_types else "",
-        "Use the following relation property types, don't use other relation property types "
-        "that is not defined below:"
+        "Use the following relation property types, don't use other relation "
+        "property types that is not defined below:"
         "# RELATION PROPERTY TYPES:"
         "{rels_property_types}" if rels_property_types else "",
         #"Your task is to extract relationships from text strictly adhering "
@@ -944,7 +949,7 @@ class LLMGraphTransformer:
                 # Ensure the node exists in the dictionary
                 if head not in nodes_set:
                     nodes_set[head] = {"type": head_type, "properties": {}}
-                 # Handle "HAS_PROPERTY" differently: store as a node property instead of a relation
+                # Handle "HAS_PROPERTY" differently
                 if relation_type == "HAS_PROPERTY":
                     nodes_set[head]["properties"][tail_type] = tail
                 else:
@@ -962,7 +967,15 @@ class LLMGraphTransformer:
                         )
                     )
             # Convert nodes_set to a list of Node objects with properties
-            nodes = [Node(id=node_id, type=data["type"], properties=data["properties"]) for node_id, data in nodes_set.items()]
+            nodes = [
+                Node(
+                    id=node_id,
+                    type=data["type"],
+                    properties=data["properties"]
+                )
+                for node_id, data in nodes_set.items()
+            ]
+
 
         # Strict mode filtering
         if self.strict_mode and (self.allowed_nodes or self.allowed_relationships):
