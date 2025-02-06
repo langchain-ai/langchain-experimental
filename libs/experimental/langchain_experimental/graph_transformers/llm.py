@@ -170,7 +170,7 @@ def optional_enum_field(
             enum=parsed_enum_values,  # type: ignore[call-arg]
             description=f"{description}. Available options are {parsed_enum_values}",
             **field_kwargs,
-        )
+        )  # type: ignore[call-overload]
     elif enum_values:
         return Field(
             ...,

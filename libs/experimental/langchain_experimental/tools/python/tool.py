@@ -92,8 +92,8 @@ class PythonAstREPLTool(BaseTool):
         "When using this tool, sometimes output is abbreviated - "
         "make sure it does not look abbreviated before using it in your answer."
     )
-    globals: Optional[Dict] = Field(default_factory=dict)
-    locals: Optional[Dict] = Field(default_factory=dict)
+    globals: Optional[Dict] = Field(default_factory=dict)  # type: ignore[arg-type]
+    locals: Optional[Dict] = Field(default_factory=dict)  # type: ignore[arg-type]
     sanitize_input: bool = True
     args_schema: Type[BaseModel] = PythonInputs
 

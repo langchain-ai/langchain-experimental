@@ -15,7 +15,7 @@ def test_video_captioning_hard() -> None:
     chain = VideoCaptioningChain(  # type: ignore[call-arg]
         llm=ChatOpenAI(
             model="gpt-4",
-            max_tokens=4000,
+            max_completion_tokens=4000,
         )
     )
     srt_content = chain.run(video_file_path=URL)
