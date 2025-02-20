@@ -46,7 +46,7 @@ def case_insensitive_matching_strategy(
                 repl=original,
                 string=text,
                 flags=re.IGNORECASE,
-                )
+            )
     return text
 
 
