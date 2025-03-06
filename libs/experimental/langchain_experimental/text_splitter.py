@@ -2,7 +2,8 @@
 
 import copy
 import re
-from typing import Any, Dict, Iterable, List, Literal, Optional, Sequence, Tuple, cast
+from collections.abc import Iterable, Sequence
+from typing import Any, Literal, cast
 
 import numpy as np
 from langchain_community.utils.math import (
@@ -12,7 +13,26 @@ from langchain_core.documents import BaseDocumentTransformer, Document
 from langchain_core.embeddings import Embeddings
 
 
-def combine_sentences(sentences: List[dict], buffer_size: int = 1) -> List[dict]:
+def split_on_closest_newline(text: str, max_char: int = 16000) -> list[str]:
+    result = []
+    start = 0
+    while start < len(text):
+        if len(text) - start <= max_char:
+            result.append(text[start:])
+            break
+
+        split_at = min(start + max_char, len(text))
+
+        newline_index = text.rfind("\n", start, split_at)
+        if newline_index > start:
+            split_at = newline_index
+
+        result.append(text[start:split_at])
+        start = split_at
+    return result
+
+
+def combine_sentences(sentences: list[dict], buffer_size: int = 1) -> list[dict]:
     """Combine sentences based on buffer size.
 
     Args:
@@ -34,7 +54,7 @@ def combine_sentences(sentences: List[dict], buffer_size: int = 1) -> List[dict]
             # (to avoid index out of range like on the first one)
             if j >= 0:
                 # Add the sentence at index j to the combined_sentence string
-                combined_sentence += sentences[j]["sentence"] + " "
+                combined_sentence += sentences[j]["sentence"]
 
         # Add the current sentence
         combined_sentence += sentences[i]["sentence"]
@@ -44,7 +64,7 @@ def combine_sentences(sentences: List[dict], buffer_size: int = 1) -> List[dict]
             # Check if the index j is within the range of the sentences list
             if j < len(sentences):
                 # Add the sentence at index j to the combined_sentence string
-                combined_sentence += " " + sentences[j]["sentence"]
+                combined_sentence += sentences[j]["sentence"]
 
         # Then add the whole thing to your dict
         # Store the combined sentence in the current sentence dict
@@ -53,7 +73,7 @@ def combine_sentences(sentences: List[dict], buffer_size: int = 1) -> List[dict]
     return sentences
 
 
-def calculate_cosine_distances(sentences: List[dict]) -> Tuple[List[float], List[dict]]:
+def calculate_cosine_distances(sentences: list[dict]) -> tuple[list[float], list[dict]]:
     """Calculate cosine distances between sentences.
 
     Args:
@@ -88,7 +108,7 @@ def calculate_cosine_distances(sentences: List[dict]) -> Tuple[List[float], List
 BreakpointThresholdType = Literal[
     "percentile", "standard_deviation", "interquartile", "gradient"
 ]
-BREAKPOINT_DEFAULTS: Dict[BreakpointThresholdType, float] = {
+BREAKPOINT_DEFAULTS: dict[BreakpointThresholdType, float] = {
     "percentile": 95,
     "standard_deviation": 3,
     "interquartile": 1.5,
@@ -112,14 +132,15 @@ class SemanticChunker(BaseDocumentTransformer):
         self,
         embeddings: Embeddings,
         buffer_size: int = 1,
-        add_start_index: bool = False,
+        add_chunk_indexes: bool = False,
         breakpoint_threshold_type: BreakpointThresholdType = "percentile",
-        breakpoint_threshold_amount: Optional[float] = None,
-        number_of_chunks: Optional[int] = None,
-        sentence_split_regex: str = r"(?<=[.?!])\s+",
-        min_chunk_size: Optional[int] = None,
+        breakpoint_threshold_amount: float | None = None,
+        number_of_chunks: int | None = None,
+        sentence_split_regex: str = r"(?<=[.?!])(\s+)",
+        min_chunk_size: int | None = None,
+        max_sentence_chars: int = 1000,
     ):
-        self._add_start_index = add_start_index
+        self._add_chunk_indexes = add_chunk_indexes
         self.embeddings = embeddings
         self.buffer_size = buffer_size
         self.breakpoint_threshold_type = breakpoint_threshold_type
@@ -132,10 +153,11 @@ class SemanticChunker(BaseDocumentTransformer):
         else:
             self.breakpoint_threshold_amount = breakpoint_threshold_amount
         self.min_chunk_size = min_chunk_size
+        self.max_sentence_chars = max_sentence_chars
 
     def _calculate_breakpoint_threshold(
-        self, distances: List[float]
-    ) -> Tuple[float, List[float]]:
+        self, distances: list[float]
+    ) -> tuple[float, list[float]]:
         if self.breakpoint_threshold_type == "percentile":
             return cast(
                 float,
@@ -167,7 +189,7 @@ class SemanticChunker(BaseDocumentTransformer):
                 f"{self.breakpoint_threshold_type}"
             )
 
-    def _threshold_from_clusters(self, distances: List[float]) -> float:
+    def _threshold_from_clusters(self, distances: list[float]) -> float:
         """
         Calculate the threshold based on the number of chunks.
         Inverse of percentile method.
@@ -192,14 +214,15 @@ class SemanticChunker(BaseDocumentTransformer):
         return cast(float, np.percentile(distances, y))
 
     def _calculate_sentence_distances(
-        self, single_sentences_list: List[str]
-    ) -> Tuple[List[float], List[dict]]:
+        self, single_sentences_list: list[str]
+    ) -> tuple[list[float], list[dict]]:
         """Split text into multiple components."""
 
         _sentences = [
             {"sentence": x, "index": i} for i, x in enumerate(single_sentences_list)
         ]
         sentences = combine_sentences(_sentences, self.buffer_size)
+
         embeddings = self.embeddings.embed_documents(
             [x["combined_sentence"] for x in sentences]
         )
@@ -208,15 +231,27 @@ class SemanticChunker(BaseDocumentTransformer):
 
         return calculate_cosine_distances(sentences)
 
-    def _get_single_sentences_list(self, text: str) -> List[str]:
-        return re.split(self.sentence_split_regex, text)
-
     def split_text(
         self,
         text: str,
-    ) -> List[str]:
+    ) -> list[str]:
         # Splitting the essay (by default on '.', '?', and '!')
-        single_sentences_list = self._get_single_sentences_list(text)
+        single_sentences_list_temp = []
+        start = 0
+        for match in re.finditer(self.sentence_split_regex, text):
+            split_index = match.end()
+            single_sentences_list_temp.append(text[start:split_index])
+            start = split_index
+        single_sentences_list_temp.append(text[start:])
+
+        single_sentences_list = []
+        for sentence in single_sentences_list_temp:
+            if len(sentence) <= self.max_sentence_chars:
+                single_sentences_list.append(sentence)
+            else:
+                single_sentences_list.extend(
+                    split_on_closest_newline(sentence, self.max_sentence_chars)
+                )
 
         # having len(single_sentences_list) == 1 would cause the following
         # np.percentile to fail.
@@ -254,7 +289,7 @@ class SemanticChunker(BaseDocumentTransformer):
 
             # Slice the sentence_dicts from the current start index to the end index
             group = sentences[start_index : end_index + 1]
-            combined_text = " ".join([d["sentence"] for d in group])
+            combined_text = "".join([d["sentence"] for d in group])
             # If specified, merge together small chunks.
             if (
                 self.min_chunk_size is not None
@@ -268,28 +303,30 @@ class SemanticChunker(BaseDocumentTransformer):
 
         # The last group, if any sentences remain
         if start_index < len(sentences):
-            combined_text = " ".join([d["sentence"] for d in sentences[start_index:]])
+            combined_text = "".join([d["sentence"] for d in sentences[start_index:]])
             chunks.append(combined_text)
         return chunks
 
     def create_documents(
-        self, texts: List[str], metadatas: Optional[List[dict]] = None
-    ) -> List[Document]:
+        self, texts: list[str], metadatas: list[dict] | None = None
+    ) -> list[Document]:
         """Create documents from a list of texts."""
         _metadatas = metadatas or [{}] * len(texts)
         documents = []
-        for i, text in enumerate(texts):
+        for page_idx, text in enumerate(texts):
             start_index = 0
             for chunk in self.split_text(text):
-                metadata = copy.deepcopy(_metadatas[i])
-                if self._add_start_index:
-                    metadata["start_index"] = start_index
+                metadata = copy.deepcopy(_metadatas[page_idx])
+                if self._add_chunk_indexes:
+                    metadata = self.add_chunk_indexes_to_metadata(
+                        metadata, chunk, start_index, page_idx
+                    )
                 new_doc = Document(page_content=chunk, metadata=metadata)
                 documents.append(new_doc)
                 start_index += len(chunk)
         return documents
 
-    def split_documents(self, documents: Iterable[Document]) -> List[Document]:
+    def split_documents(self, documents: Iterable[Document]) -> list[Document]:
         """Split documents."""
         texts, metadatas = [], []
         for doc in documents:
@@ -302,3 +339,12 @@ class SemanticChunker(BaseDocumentTransformer):
     ) -> Sequence[Document]:
         """Transform sequence of documents by splitting them."""
         return self.split_documents(list(documents))
+
+    @staticmethod
+    def add_chunk_indexes_to_metadata(
+        metadata: dict, chunk: str, start_index: int, page_index: int
+    ) -> dict:
+        metadata["start"] = start_index
+        metadata["end"] = start_index + len(chunk)
+        metadata["page"] = page_index
+        return metadata
