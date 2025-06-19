@@ -211,7 +211,7 @@ class SemanticChunker(BaseDocumentTransformer):
             for i in range(0, len(sentences), self.batch_size):
                 end = min(i + self.batch_size, len(sentences))
                 batch_embeddings = self.embeddings.embed_documents(
-                    [x["combined_sentence"] for x in sentences[i : end]]
+                    [x["combined_sentence"] for x in sentences[i:end]]
                 )
                 embeddings.extend(batch_embeddings)   
         for i, sentence in enumerate(sentences):
