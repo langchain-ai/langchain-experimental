@@ -118,6 +118,7 @@ class SemanticChunker(BaseDocumentTransformer):
         number_of_chunks: Optional[int] = None,
         sentence_split_regex: str = r"(?<=[.?!])\s+",
         min_chunk_size: Optional[int] = None,
+        batch_size: Optional[int] = None
     ):
         self._add_start_index = add_start_index
         self.embeddings = embeddings
@@ -132,6 +133,7 @@ class SemanticChunker(BaseDocumentTransformer):
         else:
             self.breakpoint_threshold_amount = breakpoint_threshold_amount
         self.min_chunk_size = min_chunk_size
+        self.batch_size = batch_size
 
     def _calculate_breakpoint_threshold(
         self, distances: List[float]
@@ -200,9 +202,18 @@ class SemanticChunker(BaseDocumentTransformer):
             {"sentence": x, "index": i} for i, x in enumerate(single_sentences_list)
         ]
         sentences = combine_sentences(_sentences, self.buffer_size)
-        embeddings = self.embeddings.embed_documents(
-            [x["combined_sentence"] for x in sentences]
-        )
+        if self.batch_size is None:
+            embeddings = self.embeddings.embed_documents(
+                [x["combined_sentence"] for x in sentences]
+            )
+        else:
+            embeddings = []
+            for i in range(0, len(sentences), self.batch_size):
+                end = min(i + self.batch_size, len(sentences))
+                batch_embeddings = self.embeddings.embed_documents(
+                    [x["combined_sentence"] for x in sentences[i : end]]
+                )
+                embeddings.extend(batch_embeddings)   
         for i, sentence in enumerate(sentences):
             sentence["combined_sentence_embedding"] = embeddings[i]
 
