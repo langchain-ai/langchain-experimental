@@ -118,7 +118,7 @@ class SemanticChunker(BaseDocumentTransformer):
         number_of_chunks: Optional[int] = None,
         sentence_split_regex: str = r"(?<=[.?!])\s+",
         min_chunk_size: Optional[int] = None,
-        batch_size: Optional[int] = None
+        batch_size: Optional[int] = None,
     ):
         self._add_start_index = add_start_index
         self.embeddings = embeddings
