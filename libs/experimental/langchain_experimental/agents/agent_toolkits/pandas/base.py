@@ -168,7 +168,7 @@ def create_pandas_dataframe_agent(
     include_df_in_prompt: Optional[bool] = True,
     number_of_head_rows: int = 5,
     extra_tools: Sequence[BaseTool] = (),
-    engine: Literal["pandas", "modin"] = "pandas",
+    engine: Literal["pandas", "bodo", "modin"] = "pandas",
     allow_dangerous_code: bool = False,
     **kwargs: Any,
 ) -> AgentExecutor:
@@ -211,7 +211,7 @@ def create_pandas_dataframe_agent(
         number_of_head_rows: Number of initial rows to include in prompt if
             include_df_in_prompt is True.
         extra_tools: Additional tools to give to agent on top of a PythonAstREPLTool.
-        engine: One of "modin" or "pandas". Defaults to "pandas".
+        engine: One of "bodo" or "modin" or "pandas". Defaults to "pandas".
         allow_dangerous_code: bool, default False
             This agent relies on access to a python repl tool which can execute
             arbitrary code. This can be dangerous and requires a specially sandboxed
@@ -265,7 +265,8 @@ def create_pandas_dataframe_agent(
             import pandas as pd
         else:
             raise ValueError(
-                f"Unsupported engine {engine}. It must be one of 'modin' or 'pandas'."
+                f"Unsupported engine {engine}. "
+                "It must be one of 'bodo' or 'modin' or 'pandas'."
             )
     except ImportError as e:
         raise ImportError(
