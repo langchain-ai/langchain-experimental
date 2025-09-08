@@ -282,7 +282,9 @@ def create_pandas_dataframe_agent(
     # Convert dataframes to Bodo DataFrames if engine is set to "bodo"
     if engine == "bodo":
         if isinstance(df, list):
-            df = [bd.from_pandas(d) if not isinstance(d, bd.DataFrame) else d for d in df]
+            df = [
+                bd.from_pandas(d) if not isinstance(d, bd.DataFrame) else d for d in df
+            ]
         else:
             df = bd.from_pandas(df) if not isinstance(df, bd.DataFrame) else df
 
