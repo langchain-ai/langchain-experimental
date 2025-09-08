@@ -256,7 +256,10 @@ def create_pandas_dataframe_agent(
             "https://python.langchain.com/docs/security/"
         )
     try:
-        if engine == "modin":
+        if engine == "bodo":
+            import bodo.pandas as bd
+            import pandas as pd
+        elif engine == "modin":
             import modin.pandas as pd
         elif engine == "pandas":
             import pandas as pd
@@ -275,6 +278,13 @@ def create_pandas_dataframe_agent(
     for _df in df if isinstance(df, list) else [df]:
         if not isinstance(_df, pd.DataFrame):
             raise ValueError(f"Expected pandas DataFrame, got {type(_df)}")
+
+    # Convert dataframes to Bodo DataFrames if engine is set to "bodo"
+    if engine == "bodo":
+        if isinstance(df, list):
+            df = [bd.from_pandas(d) if not isinstance(d, bd.DataFrame) else d for d in df]
+        else:
+            df = bd.from_pandas(df) if not isinstance(df, bd.DataFrame) else df
 
     if input_variables:
         kwargs = kwargs or {}
