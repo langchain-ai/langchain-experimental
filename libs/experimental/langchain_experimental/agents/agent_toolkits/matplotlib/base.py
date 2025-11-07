@@ -54,10 +54,7 @@ def _get_prompt(df_list: Any, multi_flag: bool, **kwargs) -> BasePromptTemplate:
         return _get_multi_prompt(df_list, **kwargs)
     else:
         return _get_single_prompt(df_list, **kwargs)
-
-
-
-
+    
 def _get_single_prompt(
     df: Any,
     *,
@@ -74,13 +71,9 @@ def _get_single_prompt(
         suffix_to_use = SUFFIX_NO_DF
     prefix = prefix if prefix is not None else PREFIX_WITH_SINGLE_DF
 
-    template = "\n\n".join([
-    prefix,
-    EXAMPLES_WITH_SINGLE_DF,
-    "{tools}",
-    FORMAT_INSTRUCTIONS,
-    suffix_to_use
-    ])
+    template = "\n\n".join(
+        [prefix, EXAMPLES_WITH_SINGLE_DF, "{tools}", FORMAT_INSTRUCTIONS, suffix_to_use]
+    )
 
     prompt = PromptTemplate.from_template(template)
 
@@ -109,13 +102,9 @@ def _get_multi_prompt(
         suffix_to_use = SUFFIX_NO_DF
     prefix = prefix if prefix is not None else PREFIX_WITH_MULTIPLE_DF
 
-    template = "\n\n".join([
-    prefix,
-    EXAMPLES_WITH_MULTIPLE_DFS,
-    "{tools}",
-    FORMAT_INSTRUCTIONS,
-    suffix_to_use,
-])
+    template = "\n\n".join(
+        [prefix,EXAMPLES_WITH_MULTIPLE_DFS,"{tools}",FORMAT_INSTRUCTIONS,suffix_to_use,]
+    )
 
     prompt = PromptTemplate.from_template(template)
     partial_prompt = prompt.partial()
@@ -170,8 +159,6 @@ def _get_functions_multi_prompt(
     system_message = SystemMessage(content=prefix + suffix)
     prompt = OpenAIFunctionsAgent.create_prompt(system_message=system_message)
     return prompt
-
-
 
 def _get_functions_prompt(
     df_list: Any,
@@ -349,12 +336,14 @@ def create_matplotlib_agent(
         df_locals["df"] = df
     
     # Add common imports to the namespace
-    df_locals.update({
-        "pd": pd,
-        "plt": plt,
-        "numpy": None,  # Will be imported if needed
-        "math": math
-    })
+    df_locals.update(
+        {
+            "pd": pd,
+            "plt": plt,
+            "numpy": None,  # Will be imported if needed
+            "math": math
+        }
+    )
     
     # Create tools list
     tools = [PythonAstREPLTool(locals=df_locals)] + list(extra_tools)

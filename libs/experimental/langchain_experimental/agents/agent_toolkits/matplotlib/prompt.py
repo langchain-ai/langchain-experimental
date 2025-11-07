@@ -15,7 +15,6 @@ When you need to create a plot, use the Python REPL tool with the following patt
 - Set `_out` variable to a summary of the results
 """
 
-
 PREFIX_WITH_MULTIPLE_DF = """
 You are a helpful data visualization assistant that creates matplotlib plots using the
 available tools. You have access to a Python REPL tool that can execute code to generate
@@ -32,8 +31,6 @@ When you need to create a plot, use the Python REPL tool with the following patt
 - Always save plots using plt.savefig() if a filename is provided
 - Set `_out` variable to a summary of the results
 """
-
-
 
 EXAMPLES_WITH_SINGLE_DF = """
 ### Examples:
@@ -92,9 +89,6 @@ Final Answer: Created a scatter plot of Fare vs Age with points colored by passe
 class using a viridis colormap. Plot saved as 'fare_vs_age_scatter.png'.
 """
 
-
-
-
 EXAMPLES_WITH_MULTIPLE_DFS = """
 ### Examples (with multiple DataFrames: df1, df2, ...):
 
@@ -146,9 +140,6 @@ showing the fare distributions for both dataframes.
 Final Answer: Created boxplots comparing the fare distributions between df1 and df2.
 """
 
-
-
-
 SUFFIX_NO_DF = """
 Begin!
 Question: {input}
@@ -170,7 +161,6 @@ Begin!
 Question: {input}
 {agent_scratchpad}"""
 
-
 SINGLE_PREFIX_WITH_FUNCTIONS = """
 You are a helpful data visualization assistant that creates matplotlib plots.
 You have access to a Python REPL tool that can execute code to generate plots.
@@ -189,8 +179,6 @@ When creating plots:
 5. Always save plots using plt.savefig() if a filename is provided
 6. Close the plot with plt.close() to free memory
 """
-
-
 
 MULTI_DF_PREFIX_FUNCTIONS = """
 You are a helpful data visualization assistant that creates matplotlib plots.
@@ -211,8 +199,6 @@ When creating plots:
 5. Always save plots using plt.savefig() if a filename is provided
 6. Close the plot with plt.close() to free memory
 """
-
-
 
 FUNCTIONS_WITH_DF = """
 This is the result of `print(df.head())`:
