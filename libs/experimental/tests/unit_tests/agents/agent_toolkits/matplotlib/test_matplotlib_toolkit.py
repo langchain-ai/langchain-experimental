@@ -1,11 +1,13 @@
-import pytest
-import pandas as pd
 from unittest.mock import MagicMock, patch
+
+import pandas as pd
+import pytest
+from langchain.agents import AgentType
+from langchain_core.tools import BaseTool
+
 from langchain_experimental.agents.agent_toolkits.matplotlib.base import (
     create_matplotlib_agent,
 )
-from langchain.agents import AgentType
-from langchain_core.tools import BaseTool
 
 
 class DummyTool(BaseTool):
@@ -21,7 +23,9 @@ class DummyTool(BaseTool):
 @pytest.fixture
 def mock_df():
     """Return a small dummy DataFrame."""
-    return pd.DataFrame({"Age": [22, 30, 25], "Fare": [7.25, 8.05, 10.5], "Pclass": [3, 1, 2]})
+    return pd.DataFrame(
+        {"Age": [22, 30, 25], "Fare": [7.25, 8.05, 10.5], "Pclass": [3, 1, 2]}
+    )
 
 
 @pytest.fixture
@@ -38,7 +42,10 @@ def test_create_agent_requires_opt_in_security(mock_llm, mock_df):
         create_matplotlib_agent(llm=mock_llm, df=mock_df)
 
 
-@patch("langchain_experimental.agents.agent_toolkits.matplotlib.base.PythonAstREPLTool", new=DummyTool)
+@patch(
+    "langchain_experimental.agents.agent_toolkits.matplotlib.base.PythonAstREPLTool",
+    new=DummyTool
+)
 def test_create_agent_react(mock_llm, mock_df):
     """Test ReAct agent creation path."""
     agent = create_matplotlib_agent(
@@ -50,7 +57,10 @@ def test_create_agent_react(mock_llm, mock_df):
     assert agent is not None
 
 
-@patch("langchain_experimental.agents.agent_toolkits.matplotlib.base.PythonAstREPLTool", new=DummyTool)
+@patch(
+    "langchain_experimental.agents.agent_toolkits.matplotlib.base.PythonAstREPLTool",
+    new=DummyTool
+)
 def test_create_agent_tool_calling(mock_llm, mock_df):
     """Test agent creation with tool-calling type."""
     agent = create_matplotlib_agent(
