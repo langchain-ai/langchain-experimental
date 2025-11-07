@@ -58,7 +58,7 @@ class AutoGPTPrompt(BaseChatPromptTemplate, BaseModel):  # type: ignore[misc]
             f"You are {self.ai_name}, {self.ai_role}\n{prompt_start}\n\nGOALS:\n\n"
         )
         for i, goal in enumerate(goals):
-            full_prompt += f"{i+1}. {goal}\n"
+            full_prompt += f"{i + 1}. {goal}\n"
 
         full_prompt += f"\n\n{get_prompt(self.tools)}"
         return full_prompt
@@ -84,8 +84,7 @@ class AutoGPTPrompt(BaseChatPromptTemplate, BaseModel):  # type: ignore[misc]
                 [self.token_counter(doc) for doc in relevant_memory]
             )
         content_format = (
-            f"This reminds you of these events "
-            f"from your past:\n{relevant_memory}\n\n"
+            f"This reminds you of these events from your past:\n{relevant_memory}\n\n"
         )
         memory_message = SystemMessage(content=content_format)
         used_tokens += self.token_counter(cast(str, memory_message.content))

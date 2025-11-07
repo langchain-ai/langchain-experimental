@@ -54,7 +54,8 @@ def _get_prompt(df_list: Any, multi_flag: bool, **kwargs) -> BasePromptTemplate:
         return _get_multi_prompt(df_list, **kwargs)
     else:
         return _get_single_prompt(df_list, **kwargs)
-    
+
+
 def _get_single_prompt(
     df: Any,
     *,
@@ -84,8 +85,6 @@ def _get_single_prompt(
     return partial_prompt
 
 
-
-
 def _get_multi_prompt(
     df_list: List[Any],
     *,
@@ -103,23 +102,26 @@ def _get_multi_prompt(
     prefix = prefix if prefix is not None else PREFIX_WITH_MULTIPLE_DF
 
     template = "\n\n".join(
-        [prefix,EXAMPLES_WITH_MULTIPLE_DFS,"{tools}",FORMAT_INSTRUCTIONS,suffix_to_use,]
+        [
+            prefix,
+            EXAMPLES_WITH_MULTIPLE_DFS,
+            "{tools}",
+            FORMAT_INSTRUCTIONS,
+            suffix_to_use,
+        ]
     )
 
     prompt = PromptTemplate.from_template(template)
     partial_prompt = prompt.partial()
     if "dfs_head" in partial_prompt.input_variables:
-        dfs_head = "\n\n".join([
-            d.head(number_of_head_rows).to_markdown()
-            for d in df_list
-        ])
+        dfs_head = "\n\n".join(
+            [d.head(number_of_head_rows).to_markdown() for d in df_list]
+        )
 
         partial_prompt = partial_prompt.partial(dfs_head=dfs_head)
     if "num_dfs" in partial_prompt.input_variables:
         partial_prompt = partial_prompt.partial(num_dfs=str(len(df_list)))
     return partial_prompt
-
-
 
 
 def _get_functions_single_prompt(
@@ -149,16 +151,14 @@ def _get_functions_multi_prompt(
 ) -> ChatPromptTemplate:
     if include_df_in_prompt:
         dfs_head = "\n\n".join(
-            [
-                d.head(number_of_head_rows).to_markdown()
-                for d in df_list
-            ]
+            [d.head(number_of_head_rows).to_markdown() for d in df_list]
         )
         suffix = (suffix or FUNCTIONS_WITH_MULTI_DF).format(dfs_head=dfs_head)
     prefix = (prefix or MULTI_DF_PREFIX_FUNCTIONS).format(num_dfs=str(len(df_list)))
     system_message = SystemMessage(content=prefix + suffix)
     prompt = OpenAIFunctionsAgent.create_prompt(system_message=system_message)
     return prompt
+
 
 def _get_functions_prompt(
     df_list: Any,
@@ -170,7 +170,6 @@ def _get_functions_prompt(
         return _get_functions_multi_prompt(df_list, **kwargs)
     else:
         return _get_functions_single_prompt(df_list, **kwargs)
-
 
 
 def create_matplotlib_agent(
@@ -291,7 +290,7 @@ def create_matplotlib_agent(
             "For general security guidelines, please see: "
             "https://python.langchain.com/docs/security/"
         )
-    
+
     # Import validation
     try:
         import matplotlib.pyplot as plt
@@ -334,20 +333,20 @@ def create_matplotlib_agent(
             df_locals[f"df{i + 1}"] = dataframe
     else:
         df_locals["df"] = df
-    
+
     # Add common imports to the namespace
     df_locals.update(
         {
             "pd": pd,
             "plt": plt,
             "numpy": None,  # Will be imported if needed
-            "math": math
+            "math": math,
         }
     )
-    
+
     # Create tools list
     tools = [PythonAstREPLTool(locals=df_locals)] + list(extra_tools)
-    
+
     # Determine if we're working with multiple DataFrames
     multi_flag = isinstance(df, list) and len(df) > 1
 
@@ -358,7 +357,7 @@ def create_matplotlib_agent(
                 raise ValueError(
                     "If suffix is specified, include_df_in_prompt should not be."
                 )
-           
+
             prompt = _get_prompt(
                 df,
                 multi_flag,
@@ -412,7 +411,7 @@ def create_matplotlib_agent(
             )
     except Exception as e:
         raise ValueError(f"Failed to create agent of type {agent_type}: {str(e)}")
-    
+
     # Create and return AgentExecutor with robust error handling
     return AgentExecutor(
         agent=agent,
@@ -426,4 +425,3 @@ def create_matplotlib_agent(
         handle_parsing_errors=True,  # Critical for robust error handling
         **(agent_executor_kwargs or {}),
     )
-

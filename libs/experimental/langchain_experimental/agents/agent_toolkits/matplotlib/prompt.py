@@ -207,5 +207,3 @@ This is the result of `print(df.head())`:
 FUNCTIONS_WITH_MULTI_DF = """
 This is the result of `print(df.head())` for each dataframe:
 {dfs_head}"""
-
-

@@ -91,7 +91,7 @@ class GenerativeAgentMemory(BaseMemory):
         related_memories = self.fetch_memories(topic, now=now)
         related_statements = "\n".join(
             [
-                self._format_memory_detail(memory, prefix=f"{i+1}. ")
+                self._format_memory_detail(memory, prefix=f"{i + 1}. ")
                 for i, memory in enumerate(related_memories)
             ]
         )

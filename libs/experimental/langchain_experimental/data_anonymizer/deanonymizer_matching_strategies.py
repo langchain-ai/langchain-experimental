@@ -142,8 +142,7 @@ def ngram_fuzzy_matching_strategy(
         from fuzzywuzzy import fuzz
     except ImportError as e:
         raise ImportError(
-            "Could not import fuzzywuzzy, please install with "
-            "`pip install fuzzywuzzy`."
+            "Could not import fuzzywuzzy, please install with `pip install fuzzywuzzy`."
         ) from e
 
     text_words = text.split()
