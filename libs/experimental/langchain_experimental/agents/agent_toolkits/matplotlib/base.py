@@ -49,7 +49,7 @@ from langchain_experimental.agents.agent_toolkits.matplotlib.prompt import (
 from langchain_experimental.tools.python.tool import PythonAstREPLTool
 
 
-def _get_prompt(df_list: Any, multi_flag: bool, **kwargs:Any) -> BasePromptTemplate:
+def _get_prompt(df_list: Any, multi_flag: bool, **kwargs: Any) -> BasePromptTemplate:
     if multi_flag:
         return _get_multi_prompt(df_list, **kwargs)
     else:
@@ -161,9 +161,7 @@ def _get_functions_multi_prompt(
 
 
 def _get_functions_prompt(
-    df_list: Any,
-    multi_flag: bool,
-    **kwargs: Any
+    df_list: Any, multi_flag: bool,**kwargs: Any
 ) -> ChatPromptTemplate:
     """Get the appropriate functions prompt template."""
     if multi_flag:
