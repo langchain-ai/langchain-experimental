@@ -55,13 +55,13 @@ class SmartLLMChain(Chain):
         def critique_prompt_inputs(self) -> Dict[str, Any]:
             return {
                 "question": self.question,
-                **{f"idea_{i+1}": idea for i, idea in enumerate(self.ideas)},
+                **{f"idea_{i + 1}": idea for i, idea in enumerate(self.ideas)},
             }
 
         def resolve_prompt_inputs(self) -> Dict[str, Any]:
             return {
                 "question": self.question,
-                **{f"idea_{i+1}": idea for i, idea in enumerate(self.ideas)},
+                **{f"idea_{i + 1}": idea for i, idea in enumerate(self.ideas)},
                 "critique": self.critique,
             }
 
@@ -273,7 +273,7 @@ class SmartLLMChain(Chain):
             ]
             for i, idea in enumerate(ideas):
                 _colored_text = get_colored_text(idea, "blue")
-                _text = f"Idea {i+1}:\n" + _colored_text
+                _text = f"Idea {i + 1}:\n" + _colored_text
                 if run_manager:
                     run_manager.on_text(_text, end="\n", verbose=self.verbose)
             return ideas

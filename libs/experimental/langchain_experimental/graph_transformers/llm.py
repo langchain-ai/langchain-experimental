@@ -388,8 +388,7 @@ def create_simple_model(
             value: str = Field(
                 ...,
                 description=(
-                    "Extracted value. Any date value "
-                    "should be formatted as yyyy-mm-dd."
+                    "Extracted value. Any date value should be formatted as yyyy-mm-dd."
                 ),
             )
 
@@ -468,8 +467,7 @@ def create_simple_model(
             value: str = Field(
                 ...,
                 description=(
-                    "Extracted value. Any date value "
-                    "should be formatted as yyyy-mm-dd."
+                    "Extracted value. Any date value should be formatted as yyyy-mm-dd."
                 ),
             )
 

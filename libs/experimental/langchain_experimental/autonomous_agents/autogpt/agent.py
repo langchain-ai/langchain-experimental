@@ -129,9 +129,7 @@ class AutoGPT:
                     f"commands and only respond in the specified JSON format."
                 )
 
-            memory_to_add = (
-                f"Assistant Reply: {assistant_reply} " f"\nResult: {result} "
-            )
+            memory_to_add = f"Assistant Reply: {assistant_reply} \nResult: {result} "
             if self.feedback_tool is not None:
                 feedback = f"{self.feedback_tool.run('Input: ')}"
                 if feedback in {"q", "stop"}:
