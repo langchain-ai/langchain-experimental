@@ -1,16 +1,7 @@
 from __future__ import annotations
-import io
 import math
-import base64
-import builtins
-from dataclasses import dataclass
-from typing import Any, Dict, Optional, Tuple, List, Union, Sequence, Literal, cast
+from typing import Any, Dict, Optional, List, Union, Sequence, Literal, cast
 import warnings
-import matplotlib.pyplot as plt
-import pandas as pd
-import os
-from dotenv import load_dotenv
-import builtins
 from langchain_experimental.agents.agent_toolkits.matplotlib.prompt import (
     PREFIX_WITH_SINGLE_DF,
     PREFIX_WITH_MULTIPLE_DF,
@@ -26,10 +17,6 @@ from langchain_experimental.agents.agent_toolkits.matplotlib.prompt import (
 )
 from langchain_experimental.tools.python.tool import PythonAstREPLTool
 from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
-from langchain.agents.openai_functions_agent.base import (
-    OpenAIFunctionsAgent,
-    create_openai_functions_agent,
-)
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import (
     BasePromptTemplate,
@@ -50,7 +37,6 @@ from langchain.agents.agent import (
     RunnableAgent,
     RunnableMultiActionAgent,
 )
-from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
 from langchain.agents.openai_functions_agent.base import (
     OpenAIFunctionsAgent,
     create_openai_functions_agent,
@@ -88,7 +74,14 @@ def _get_single_prompt(
         suffix_to_use = SUFFIX_NO_DF
     prefix = prefix if prefix is not None else PREFIX_WITH_SINGLE_DF
 
-    template = "\n\n".join([prefix,EXAMPLES_WITH_SINGLE_DF, "{tools}", FORMAT_INSTRUCTIONS, suffix_to_use])
+    template = "\n\n".join([
+    prefix,
+    EXAMPLES_WITH_SINGLE_DF,
+    "{tools}",
+    FORMAT_INSTRUCTIONS,
+    suffix_to_use
+    ])
+
     prompt = PromptTemplate.from_template(template)
 
     partial_prompt = prompt.partial()
@@ -116,11 +109,22 @@ def _get_multi_prompt(
         suffix_to_use = SUFFIX_NO_DF
     prefix = prefix if prefix is not None else PREFIX_WITH_MULTIPLE_DF
 
-    template = "\n\n".join([prefix,EXAMPLES_WITH_MULTIPLE_DFS, "{tools}", FORMAT_INSTRUCTIONS, suffix_to_use])
+    template = "\n\n".join([
+    prefix,
+    EXAMPLES_WITH_MULTIPLE_DFS,
+    "{tools}",
+    FORMAT_INSTRUCTIONS,
+    suffix_to_use,
+])
+
     prompt = PromptTemplate.from_template(template)
     partial_prompt = prompt.partial()
     if "dfs_head" in partial_prompt.input_variables:
-        dfs_head = "\n\n".join([d.head(number_of_head_rows).to_markdown() for d in df_list])
+        dfs_head = "\n\n".join([
+            d.head(number_of_head_rows).to_markdown()
+            for d in df_list
+        ])
+
         partial_prompt = partial_prompt.partial(dfs_head=dfs_head)
     if "num_dfs" in partial_prompt.input_variables:
         partial_prompt = partial_prompt.partial(num_dfs=str(len(df_list)))
@@ -155,7 +159,12 @@ def _get_functions_multi_prompt(
     number_of_head_rows: int = 5,
 ) -> ChatPromptTemplate:
     if include_df_in_prompt:
-        dfs_head = "\n\n".join([d.head(number_of_head_rows).to_markdown() for d in df_list])
+        dfs_head = "\n\n".join(
+            [
+                d.head(number_of_head_rows).to_markdown()
+                for d in df_list
+            ]
+        )
         suffix = (suffix or FUNCTIONS_WITH_MULTI_DF).format(dfs_head=dfs_head)
     prefix = (prefix or MULTI_DF_PREFIX_FUNCTIONS).format(num_dfs=str(len(df_list)))
     system_message = SystemMessage(content=prefix + suffix)
@@ -196,64 +205,56 @@ def create_matplotlib_agent(
 ) -> AgentExecutor:
     """Construct a Matplotlib agent from an LLM and dataframe(s).
 
-    This function creates a universal matplotlib agent that works with all supported
+    This function creates a universal Matplotlib agent that works with all supported
     LangChain agent types: ReAct, OpenAI Functions, OpenAI Tools, and Tool Calling.
 
     Security Notice:
-        This agent relies on access to a python repl tool which can execute
-        arbitrary code. This can be dangerous and requires a specially sandboxed
-        environment to be safely used. Failure to run this code in a properly
-        sandboxed environment can lead to arbitrary code execution vulnerabilities,
-        which can lead to data breaches, data loss, or other security incidents.
+        This agent relies on access to a Python REPL tool which can execute arbitrary
+        code. This can be dangerous and requires a specially sandboxed environment to
+        be safely used. Failure to run this in a properly sandboxed environment can
+        lead to arbitrary code execution, data breaches, or other security incidents.
 
-        Do not use this code with untrusted inputs, with elevated permissions,
-        or without consulting your security team about proper sandboxing!
+        Do not use this with untrusted inputs, with elevated permissions, or without
+        consulting your security team about proper sandboxing.
 
-        You must opt-in to use this functionality by setting allow_dangerous_code=True.
+        You must opt in to use this functionality by setting
+        ``allow_dangerous_code=True``.
 
     Args:
         llm: Language model to use for the agent. If agent_type is "tool-calling" then
             llm is expected to support tool calling.
-        df: Pandas dataframe or list of Pandas dataframes.
+        df: Pandas DataFrame or list of DataFrames.
         agent_type: One of "tool-calling", "openai-tools", "openai-functions", or
             "zero-shot-react-description". Defaults to "zero-shot-react-description".
             "tool-calling" is recommended for newer LLMs.
-        callback_manager: DEPRECATED. Pass "callbacks" key into 'agent_executor_kwargs'
+        callback_manager: (DEPRECATED) Use "callbacks" in agent_executor_kwargs
             instead to pass constructor callbacks to AgentExecutor.
         prefix: Prompt prefix string.
         suffix: Prompt suffix string.
-        input_variables: DEPRECATED. Input variables automatically inferred from
-            constructed prompt.
-        verbose: AgentExecutor verbosity.
+        input_variables: (DEPRECATED) Input variables are automatically inferred.
+        verbose: Whether the AgentExecutor should run verbosely.
         return_intermediate_steps: Passed to AgentExecutor init.
         max_iterations: Passed to AgentExecutor init.
         max_execution_time: Passed to AgentExecutor init.
         early_stopping_method: Passed to AgentExecutor init.
-        agent_executor_kwargs: Arbitrary additional AgentExecutor args.
+        agent_executor_kwargs: Additional keyword arguments for AgentExecutor.
         include_df_in_prompt: Whether to include the first number_of_head_rows in the
             prompt. Must be None if suffix is not None.
-        number_of_head_rows: Number of initial rows to include in prompt if
-            include_df_in_prompt is True.
-        extra_tools: Additional tools to give to agent on top of a PythonAstREPLTool.
-        allow_dangerous_code: bool, default False
-            This agent relies on access to a python repl tool which can execute
-            arbitrary code. This can be dangerous and requires a specially sandboxed
-            environment to be safely used.
-            Failure to properly sandbox this class can lead to arbitrary code execution
-            vulnerabilities, which can lead to data breaches, data loss, or
-            other security incidents.
-            You must opt in to use this functionality by setting
-            allow_dangerous_code=True.
-
-        **kwargs: DEPRECATED. Not used, kept for backwards compatibility.
+        number_of_head_rows: Number of initial rows to include if
+            include_df_in_prompt=True.
+        extra_tools: Additional tools to include besides PythonAstREPLTool.
+        allow_dangerous_code: Whether to allow execution of arbitrary Python code.
+            Default is False. Must be True to enable this feature. Use only in a
+            sandboxed environment to avoid security risks.
+        **kwargs: (DEPRECATED) Retained for backward compatibility.
 
     Returns:
-        An AgentExecutor with the specified agent_type agent and access to
-        a PythonAstREPLTool with the DataFrame(s) and any user-provided extra_tools.
+        AgentExecutor: An instance with the specified agent_type and access to
+        PythonAstREPLTool for the provided DataFrame(s) and any user tools.
 
     Raises:
-        ValueError: If allow_dangerous_code is False, if invalid DataFrames are provided,
-                   or if an unsupported agent type is specified.
+        ValueError: If allow_dangerous_code=False, invalid DataFrames are provided,
+            or an unsupported agent type is specified.
         ImportError: If pandas is not installed.
 
     Example:
@@ -265,29 +266,28 @@ def create_matplotlib_agent(
 
             df = pd.read_csv("titanic.csv")
             llm = ChatOpenAI(model="gpt-3.5-turbo", temperature=0)
-            
-            # Test with different agent types
+
             agent_types = [
                 AgentType.ZERO_SHOT_REACT_DESCRIPTION,
                 "tool-calling",
                 "openai-tools",
-                AgentType.OPENAI_FUNCTIONS
+                AgentType.OPENAI_FUNCTIONS,
             ]
-            
+
             for agent_type in agent_types:
                 agent_executor = create_matplotlib_agent(
                     llm,
                     df,
                     agent_type=agent_type,
                     verbose=True,
-                    allow_dangerous_code=True
+                    allow_dangerous_code=True,
                 )
                 result = agent_executor.invoke({
                     "input": "Create a histogram of Age and save it as 'plot.png'"
                 })
                 print(f"Agent {agent_type}: {result['output']}")
-        
     """
+
     # Validate security settings
     if not allow_dangerous_code:
         raise ValueError(
@@ -302,14 +302,15 @@ def create_matplotlib_agent(
     
     # Import validation
     try:
-        import pandas as pd
         import matplotlib.pyplot as plt
-    except ImportError:
+        import pandas as pd
+    except ImportError as e:
         raise ImportError(
-            "both pandas and matplotlib must be installed to use the matplotlib dataframe agent. "
-            "Please install pandas with `pip install pandas matplotlib`."
-        )
-    
+            "Both pandas and matplotlib must be installed to use the Matplotlib "
+            "DataFrame agent. Please install them with "
+            "`pip install pandas matplotlib`."
+        ) from e
+
     # Set pandas display options for interactive environments
     if is_interactive_env():
         pd.set_option("display.max_columns", None)
