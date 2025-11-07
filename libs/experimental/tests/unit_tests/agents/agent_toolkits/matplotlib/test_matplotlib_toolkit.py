@@ -16,6 +16,7 @@ class DummyTool(BaseTool):
 
     def _run(self, *args, **kwargs):
         return "success"
+
     def _arun(self, *args, **kwargs):
         raise NotImplementedError()
 
@@ -44,7 +45,7 @@ def test_create_agent_requires_opt_in_security(mock_llm, mock_df):
 
 @patch(
     "langchain_experimental.agents.agent_toolkits.matplotlib.base.PythonAstREPLTool",
-    new=DummyTool
+    new=DummyTool,
 )
 def test_create_agent_react(mock_llm, mock_df):
     """Test ReAct agent creation path."""
@@ -59,7 +60,7 @@ def test_create_agent_react(mock_llm, mock_df):
 
 @patch(
     "langchain_experimental.agents.agent_toolkits.matplotlib.base.PythonAstREPLTool",
-    new=DummyTool
+    new=DummyTool,
 )
 def test_create_agent_tool_calling(mock_llm, mock_df):
     """Test agent creation with tool-calling type."""
@@ -70,7 +71,6 @@ def test_create_agent_tool_calling(mock_llm, mock_df):
         agent_type="tool-calling",
     )
     assert agent is not None
-
 
 
 def test_invalid_dataframe_type(mock_llm):
