@@ -1,28 +1,8 @@
 from __future__ import annotations
+
 import math
-from typing import Any, Dict, Optional, List, Union, Sequence, Literal, cast
 import warnings
-from langchain_experimental.agents.agent_toolkits.matplotlib.prompt import (
-    PREFIX_WITH_SINGLE_DF,
-    PREFIX_WITH_MULTIPLE_DF,
-    EXAMPLES_WITH_SINGLE_DF,
-    EXAMPLES_WITH_MULTIPLE_DFS,
-    SUFFIX_WITH_DF,
-    SUFFIX_NO_DF,
-    SUFFIX_WITH_MULTI_DF,
-    FUNCTIONS_WITH_DF,
-    FUNCTIONS_WITH_MULTI_DF,
-    SINGLE_PREFIX_WITH_FUNCTIONS,
-    MULTI_DF_PREFIX_FUNCTIONS
-)
-from langchain_experimental.tools.python.tool import PythonAstREPLTool
-from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
-from langchain_core.messages import SystemMessage
-from langchain_core.prompts import (
-    BasePromptTemplate,
-    ChatPromptTemplate,
-    PromptTemplate,
-)
+from typing import Any, Dict, List, Literal, Optional, Sequence, Union, cast
 
 from langchain.agents import (
     AgentType,
@@ -37,16 +17,36 @@ from langchain.agents.agent import (
     RunnableAgent,
     RunnableMultiActionAgent,
 )
+from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
 from langchain.agents.openai_functions_agent.base import (
     OpenAIFunctionsAgent,
     create_openai_functions_agent,
 )
 from langchain_core.callbacks import BaseCallbackManager
 from langchain_core.language_models import BaseLanguageModel, LanguageModelLike
+from langchain_core.messages import SystemMessage
+from langchain_core.prompts import (
+    BasePromptTemplate,
+    ChatPromptTemplate,
+    PromptTemplate,
+)
 from langchain_core.tools import BaseTool
 from langchain_core.utils.interactive_env import is_interactive_env
 
-
+from langchain_experimental.agents.agent_toolkits.matplotlib.prompt import (
+    EXAMPLES_WITH_MULTIPLE_DFS,
+    EXAMPLES_WITH_SINGLE_DF,
+    FUNCTIONS_WITH_DF,
+    FUNCTIONS_WITH_MULTI_DF,
+    MULTI_DF_PREFIX_FUNCTIONS,
+    PREFIX_WITH_MULTIPLE_DF,
+    PREFIX_WITH_SINGLE_DF,
+    SINGLE_PREFIX_WITH_FUNCTIONS,
+    SUFFIX_NO_DF,
+    SUFFIX_WITH_DF,
+    SUFFIX_WITH_MULTI_DF,
+)
+from langchain_experimental.tools.python.tool import PythonAstREPLTool
 
 
 def _get_prompt(df_list: Any, multi_flag: bool, **kwargs) -> BasePromptTemplate:
@@ -173,7 +173,12 @@ def _get_functions_multi_prompt(
 
 
 
-def _get_functions_prompt(df_list: Any, multi_flag: bool, **kwargs) -> BasePromptTemplate:
+def _get_functions_prompt(
+    df_list: Any,
+    multi_flag: bool,
+    **kwargs,
+) -> BasePromptTemplate:
+    """Get the appropriate functions prompt template."""
     if multi_flag:
         return _get_functions_multi_prompt(df_list, **kwargs)
     else:
@@ -319,7 +324,10 @@ def create_matplotlib_agent(
     df_list = df if isinstance(df, list) else [df]
     for i, _df in enumerate(df_list):
         if not isinstance(_df, pd.DataFrame):
-            raise ValueError(f"Expected pandas DataFrame at position {i}, got {type(_df)}")
+            raise ValueError(
+                f"Expected pandas DataFrame at position {i}, got {type(_df)}"
+            )
+
         if _df.empty:
             warnings.warn(f"DataFrame at position {i} is empty")
 

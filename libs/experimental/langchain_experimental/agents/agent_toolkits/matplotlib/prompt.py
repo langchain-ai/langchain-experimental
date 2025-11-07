@@ -40,8 +40,8 @@ EXAMPLES_WITH_SINGLE_DF = """
 
 Question: Plot a histogram of Age with mean line and save as 'age_histogram.png'
 Thought: I need to create a histogram showing the distribution of Age and add a vertical
-line at the mean age. I'll use the Python REPL tool to execute the plotting code and save
-it.
+line at the mean age. 
+I'll use the Python REPL tool to execute the plotting code and save it.
 Action: python_repl_ast
 Action Input: 
 import matplotlib.pyplot as plt
@@ -61,8 +61,8 @@ plt.grid(axis='y', alpha=0.75)
 plt.savefig('age_histogram.png', dpi=300, bbox_inches='tight')
 _out = f'Mean Age: {{mean_age:.2f}}'
 Observation: [Plot generated and saved successfully]
-Thought: I have successfully created a histogram of age distribution with a mean line and
-saved it as a PNG file.
+Thought: I have successfully created a histogram of age distribution with a mean line 
+and saved it as a PNG file.
 Final Answer: Created a histogram showing the age distribution with a red dashed line
 indicating the mean age. Plot saved as 'age_histogram.png'.
 
