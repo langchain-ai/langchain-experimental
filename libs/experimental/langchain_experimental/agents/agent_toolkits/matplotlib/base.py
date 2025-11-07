@@ -161,7 +161,7 @@ def _get_functions_multi_prompt(
 
 
 def _get_functions_prompt(
-    df_list: Any, multi_flag: bool,**kwargs: Any
+    df_list: Any, multi_flag: bool, **kwargs: Any
 ) -> ChatPromptTemplate:
     """Get the appropriate functions prompt template."""
     if multi_flag:
