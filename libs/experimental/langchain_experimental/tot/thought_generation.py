@@ -10,7 +10,7 @@ exploration.
 from abc import abstractmethod
 from typing import Any, Dict, List, Tuple
 
-from langchain.chains.llm import LLMChain
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.prompts.base import BasePromptTemplate
 from pydantic import Field
 

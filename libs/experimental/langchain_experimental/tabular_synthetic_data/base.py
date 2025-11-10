@@ -1,8 +1,8 @@
 import asyncio
 from typing import Any, Dict, List, Optional, Union, cast
 
-from langchain.chains.base import Chain
-from langchain.chains.llm import LLMChain
+from langchain_classic.chains.base import Chain
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
 from langchain_core.utils.pydantic import is_basemodel_instance

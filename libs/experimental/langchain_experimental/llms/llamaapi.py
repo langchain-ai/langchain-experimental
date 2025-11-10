@@ -9,7 +9,7 @@ from typing import (
     Tuple,
 )
 
-from langchain.schema import (
+from langchain_classic.schema import (
     ChatGeneration,
     ChatResult,
 )

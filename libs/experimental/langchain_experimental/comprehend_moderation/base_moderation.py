@@ -82,13 +82,11 @@ class BaseModeration:
             if isinstance(message, HumanMessage):
                 messages[self.chat_message_index] = HumanMessage(
                     content=text,
-                    example=message.example,
                     additional_kwargs=message.additional_kwargs,
                 )
             if isinstance(message, AIMessage):
                 messages[self.chat_message_index] = AIMessage(
                     content=text,
-                    example=message.example,
                     additional_kwargs=message.additional_kwargs,
                 )
             return ChatPromptValue(messages=messages)

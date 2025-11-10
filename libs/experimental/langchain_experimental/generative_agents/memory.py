@@ -3,10 +3,10 @@ import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from langchain.chains import LLMChain
-from langchain.retrievers import TimeWeightedVectorStoreRetriever
-from langchain.schema import BaseMemory, Document
-from langchain.utils import mock_now
+from langchain_classic.chains import LLMChain
+from langchain_classic.retrievers import TimeWeightedVectorStoreRetriever
+from langchain_classic.schema import BaseMemory, Document
+from langchain_classic.utils import mock_now
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts import PromptTemplate
 

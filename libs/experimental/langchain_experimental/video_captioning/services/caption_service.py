@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Tuple
 
-from langchain.chains.llm import LLMChain
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 from langchain_core.language_models import BaseLanguageModel
 

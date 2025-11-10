@@ -6,9 +6,9 @@ import logging
 import warnings
 from typing import Any, Dict, List, Optional
 
-from langchain.chains.base import Chain
-from langchain.chains.llm import LLMChain
-from langchain.schema import BasePromptTemplate, OutputParserException
+from langchain_classic.chains.base import Chain
+from langchain_classic.chains.llm import LLMChain
+from langchain_classic.schema import BasePromptTemplate, OutputParserException
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 from langchain_core.language_models import BaseLanguageModel
 from pydantic import ConfigDict, Field, model_validator
@@ -25,7 +25,7 @@ class LLMBashChain(Chain):
     Example:
         .. code-block:: python
 
-            from langchain.chains import LLMBashChain
+            from langchain_classic.chains import LLMBashChain
             from langchain_community.llms import OpenAI
             llm_bash = LLMBashChain.from_llm(OpenAI())
     """

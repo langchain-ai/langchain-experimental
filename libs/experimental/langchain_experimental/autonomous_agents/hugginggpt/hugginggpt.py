@@ -1,6 +1,6 @@
 from typing import List
 
-from langchain.base_language import BaseLanguageModel
+from langchain_classic.base_language import BaseLanguageModel
 from langchain_core.tools import BaseTool
 
 from langchain_experimental.autonomous_agents.hugginggpt.repsonse_generator import (

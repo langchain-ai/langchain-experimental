@@ -2,7 +2,7 @@ import re
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
-from langchain.chains import LLMChain
+from langchain_classic.chains import LLMChain
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel, ConfigDict, Field

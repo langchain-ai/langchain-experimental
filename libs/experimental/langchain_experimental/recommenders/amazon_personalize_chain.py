@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Mapping, Optional, cast
 
-from langchain.chains import LLMChain
-from langchain.chains.base import Chain
-from langchain.schema.language_model import BaseLanguageModel
+from langchain_classic.chains import LLMChain
+from langchain_classic.chains.base import Chain
+from langchain_classic.schema.language_model import BaseLanguageModel
 from langchain_core.callbacks.manager import (
     CallbackManagerForChainRun,
 )

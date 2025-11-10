@@ -1,6 +1,6 @@
 import re
 
-from langchain.chains import LLMChain
+from langchain_classic.chains import LLMChain
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, HumanMessagePromptTemplate

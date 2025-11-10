@@ -2,7 +2,7 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
 
 import requests
-from langchain.utils import get_from_env
+from langchain_classic.utils import get_from_env
 from langchain_community.graphs.graph_document import GraphDocument, Node, Relationship
 from langchain_core.documents import Document
 

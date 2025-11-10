@@ -3,7 +3,7 @@ from collections import defaultdict
 from html.parser import HTMLParser
 from typing import Any, DefaultDict, Dict, List, Optional, cast
 
-from langchain.schema import (
+from langchain_classic.schema import (
     ChatGeneration,
     ChatResult,
 )

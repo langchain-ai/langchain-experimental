@@ -3,8 +3,8 @@ import re
 from abc import abstractmethod
 from typing import Any, Dict, List, Optional, Union
 
-from langchain.base_language import BaseLanguageModel
-from langchain.chains import LLMChain
+from langchain_classic.base_language import BaseLanguageModel
+from langchain_classic.chains import LLMChain
 from langchain_core.callbacks.manager import Callbacks
 from langchain_core.prompts.chat import (
     AIMessagePromptTemplate,

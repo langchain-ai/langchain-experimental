@@ -1,7 +1,7 @@
 from abc import abstractmethod
 from typing import Any, List, Optional
 
-from langchain.chains.llm import LLMChain
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.callbacks.manager import Callbacks
 from pydantic import BaseModel
 
