@@ -112,6 +112,11 @@ jobs:
         with:
           python-version: ${{ env.PYTHON_VERSION }}
 
+      - uses: actions/download-artifact@v6
+        with:
+          name: dist
+          path: ${{ inputs.working-directory }}/dist/
+
       - name: Import dist package
         shell: bash
         working-directory: ${{ inputs.working-directory }}
