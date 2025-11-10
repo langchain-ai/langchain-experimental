@@ -8,7 +8,7 @@ from langchain_experimental.agents.agent_toolkits.pandas.base import (
 )
 
 if TYPE_CHECKING:
-    from langchain.agents.agent import AgentExecutor
+    from langchain_classic.agents.agent import AgentExecutor
     from langchain_core.language_models import LanguageModelLike
 
 

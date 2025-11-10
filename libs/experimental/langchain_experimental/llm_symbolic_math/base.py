@@ -5,9 +5,9 @@ from __future__ import annotations
 import re
 from typing import Any, Dict, List, Optional
 
-from langchain.base_language import BaseLanguageModel
-from langchain.chains.base import Chain
-from langchain.chains.llm import LLMChain
+from langchain_classic.base_language import BaseLanguageModel
+from langchain_classic.chains.base import Chain
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.callbacks.manager import (
     AsyncCallbackManagerForChainRun,
     CallbackManagerForChainRun,
@@ -28,7 +28,7 @@ class LLMSymbolicMathChain(Chain):
     Example:
         .. code-block:: python
 
-            from langchain.chains import LLMSymbolicMathChain
+            from langchain_classic.chains import LLMSymbolicMathChain
             from langchain_community.llms import OpenAI
             llm_symbolic_math = LLMSymbolicMathChain.from_llm(OpenAI())
     """

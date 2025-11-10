@@ -3,8 +3,8 @@ from __future__ import annotations
 from textwrap import indent
 from typing import Any, Dict, List, Optional, Type
 
-from langchain.base_language import BaseLanguageModel
-from langchain.chains.base import Chain
+from langchain_classic.base_language import BaseLanguageModel
+from langchain_classic.chains.base import Chain
 from langchain_core.callbacks.manager import (
     AsyncCallbackManagerForChainRun,
     CallbackManagerForChainRun,

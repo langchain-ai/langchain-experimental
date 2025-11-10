@@ -1,5 +1,5 @@
 import pytest
-from langchain.schema import AIMessage, HumanMessage, SystemMessage
+from langchain_classic.schema import AIMessage, HumanMessage, SystemMessage
 
 from langchain_experimental.chat_models import Mixtral
 from tests.unit_tests.chat_models.test_llm_wrapper_llama2chat import FakeLLM

@@ -3,7 +3,7 @@
 import sys
 
 import pytest
-from langchain.schema import OutputParserException
+from langchain_classic.schema import OutputParserException
 
 from langchain_experimental.llm_bash.base import LLMBashChain
 from langchain_experimental.llm_bash.prompt import _PROMPT_TEMPLATE, BashOutputParser

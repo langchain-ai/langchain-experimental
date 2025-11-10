@@ -8,10 +8,10 @@ import json
 from typing import Any, ClassVar, Dict, List, Optional, Type, cast
 
 import pydantic
-from langchain.base_language import BaseLanguageModel
-from langchain.chains.base import Chain
-from langchain.chains.llm import LLMChain
-from langchain.output_parsers import PydanticOutputParser
+from langchain_classic.base_language import BaseLanguageModel
+from langchain_classic.chains.base import Chain
+from langchain_classic.chains.llm import LLMChain
+from langchain_classic.output_parsers import PydanticOutputParser
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 from langchain_core.prompts.prompt import PromptTemplate
 

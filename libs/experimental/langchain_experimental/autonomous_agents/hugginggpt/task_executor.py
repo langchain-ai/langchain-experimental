@@ -63,9 +63,9 @@ class Task:
                 if k == "image":
                     new_args["image"] = load_image(v)
             if self.task in ["video_generator", "image_generator", "text_reader"]:
-                self.product = self.tool(**new_args)
+                self.product = self.tool.invoke(**new_args)
             else:
-                self.result = self.tool(**new_args)
+                self.result = self.tool.invoke(**new_args)
         except Exception as e:
             self.status = "failed"
             self.message = str(e)

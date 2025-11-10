@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from typing import Any, Dict, List, Optional, Tuple
 
-from langchain.chains.base import Chain
+from langchain_classic.chains.base import Chain
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 
 from langchain_experimental.tot.thought import ThoughtValidity

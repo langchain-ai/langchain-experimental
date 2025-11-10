@@ -2,10 +2,10 @@
 
 from typing import Any, Dict, List, Optional, Tuple, Type
 
-from langchain.base_language import BaseLanguageModel
-from langchain.chains.base import Chain
-from langchain.input import get_colored_text
-from langchain.schema import LLMResult, PromptValue
+from langchain_classic.base_language import BaseLanguageModel
+from langchain_classic.chains.base import Chain
+from langchain_classic.input import get_colored_text
+from langchain_classic.schema import LLMResult, PromptValue
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 from langchain_core.prompts.base import BasePromptTemplate
 from langchain_core.prompts.chat import (
@@ -244,13 +244,13 @@ class SmartLLMChain(Chain):
         )
 
     def ideation_prompt(self) -> ChatPromptTemplate:
-        return ChatPromptTemplate.from_strings(self.get_prompt_strings("ideation"))
+        return ChatPromptTemplate.from_messages(self.get_prompt_strings("ideation"))
 
     def critique_prompt(self) -> ChatPromptTemplate:
-        return ChatPromptTemplate.from_strings(self.get_prompt_strings("critique"))
+        return ChatPromptTemplate.from_messages(self.get_prompt_strings("critique"))
 
     def resolve_prompt(self) -> ChatPromptTemplate:
-        return ChatPromptTemplate.from_strings(self.get_prompt_strings("resolve"))
+        return ChatPromptTemplate.from_messages(self.get_prompt_strings("resolve"))
 
     def _ideate(
         self,

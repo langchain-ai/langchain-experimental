@@ -7,7 +7,7 @@ from unittest import mock
 
 import pydantic
 import pytest
-from langchain.output_parsers import PydanticOutputParser
+from langchain_classic.output_parsers import PydanticOutputParser
 from langchain_community.llms import OpenAI
 from langchain_core.prompts.prompt import PromptTemplate
 

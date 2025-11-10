@@ -16,8 +16,8 @@ from typing import (
     Union,
 )
 
-from langchain.chains.base import Chain
-from langchain.chains.llm import LLMChain
+from langchain_classic.chains.base import Chain
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 from langchain_core.prompts import (
     BasePromptTemplate,

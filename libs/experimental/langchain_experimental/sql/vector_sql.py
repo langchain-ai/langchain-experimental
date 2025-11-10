@@ -4,8 +4,8 @@ from __future__ import annotations
 
 from typing import Any, Dict, List, Optional, Sequence, Union
 
-from langchain.chains.llm import LLMChain
-from langchain.chains.sql_database.prompt import PROMPT, SQL_PROMPTS
+from langchain_classic.chains.llm import LLMChain
+from langchain_classic.chains.sql_database.prompt import PROMPT, SQL_PROMPTS
 from langchain_community.tools.sql_database.prompt import QUERY_CHECKER
 from langchain_community.utilities.sql_database import SQLDatabase
 from langchain_core.callbacks.manager import CallbackManagerForChainRun

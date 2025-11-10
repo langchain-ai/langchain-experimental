@@ -12,6 +12,7 @@ from typing import (
     TypedDict,
     TypeVar,
     Union,
+    cast,
 )
 
 from langchain_community.chat_models.ollama import ChatOllama
@@ -86,7 +87,7 @@ def convert_to_ollama_tool(tool: Any) -> Dict:
         schema = tool.model_construct().model_json_schema()
         name = schema["title"]
     elif isinstance(tool, BaseTool):
-        schema = tool.tool_call_schema.model_json_schema()
+        schema = cast(BaseModel, tool.tool_call_schema).model_json_schema()
         name = tool.get_name()
         description = tool.description
     elif is_basemodel_instance(tool):
@@ -148,7 +149,7 @@ class OllamaFunctions(ChatOllama):
         self,
         tools: Sequence[Union[Dict[str, Any], Type[BaseModel], Callable, BaseTool]],
         **kwargs: Any,
-    ) -> Runnable[LanguageModelInput, BaseMessage]:
+    ) -> Runnable[LanguageModelInput, AIMessage]:
         return self.bind(functions=tools, **kwargs)
 
     def with_structured_output(

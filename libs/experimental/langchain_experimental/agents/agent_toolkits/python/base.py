@@ -2,11 +2,11 @@
 
 from typing import Any, Dict, Optional
 
-from langchain.agents.agent import AgentExecutor, BaseSingleActionAgent
-from langchain.agents.mrkl.base import ZeroShotAgent
-from langchain.agents.openai_functions_agent.base import OpenAIFunctionsAgent
-from langchain.agents.types import AgentType
-from langchain.chains.llm import LLMChain
+from langchain_classic.agents.agent import AgentExecutor, BaseSingleActionAgent
+from langchain_classic.agents.mrkl.base import ZeroShotAgent
+from langchain_classic.agents.openai_functions_agent.base import OpenAIFunctionsAgent
+from langchain_classic.agents.types import AgentType
+from langchain_classic.chains.llm import LLMChain
 from langchain_core.callbacks.base import BaseCallbackManager
 from langchain_core.language_models import BaseLanguageModel
 from langchain_core.messages import SystemMessage

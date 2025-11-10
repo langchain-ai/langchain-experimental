@@ -1,6 +1,6 @@
 from typing import Any, Dict, List, Optional
 
-from langchain.chains.base import Chain
+from langchain_classic.chains.base import Chain
 from langchain_core.callbacks.manager import CallbackManagerForChainRun
 from pydantic import model_validator
 

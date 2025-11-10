@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Type, Union
 
-from langchain.chains.openai_functions import create_structured_output_chain
-from langchain.schema import BaseLLMOutputParser, BasePromptTemplate
+from langchain_classic.chains.openai_functions import create_structured_output_chain
+from langchain_classic.schema import BaseLLMOutputParser, BasePromptTemplate
 from langchain_community.chat_models import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from pydantic import BaseModel

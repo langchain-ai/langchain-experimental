@@ -3,21 +3,21 @@
 import warnings
 from typing import Any, Dict, List, Literal, Optional, Sequence, Union, cast
 
-from langchain.agents import (
+from langchain_classic.agents import (
     AgentType,
     create_openai_tools_agent,
     create_react_agent,
     create_tool_calling_agent,
 )
-from langchain.agents.agent import (
+from langchain_classic.agents.agent import (
     AgentExecutor,
     BaseMultiActionAgent,
     BaseSingleActionAgent,
     RunnableAgent,
     RunnableMultiActionAgent,
 )
-from langchain.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
-from langchain.agents.openai_functions_agent.base import (
+from langchain_classic.agents.mrkl.prompt import FORMAT_INSTRUCTIONS
+from langchain_classic.agents.openai_functions_agent.base import (
     OpenAIFunctionsAgent,
     create_openai_functions_agent,
 )
