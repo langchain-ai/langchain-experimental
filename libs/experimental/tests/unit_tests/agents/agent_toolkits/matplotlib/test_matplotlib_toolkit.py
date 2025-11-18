@@ -3,7 +3,7 @@ from unittest.mock import MagicMock, patch
 
 import pandas as pd
 import pytest
-from langchain.agents import AgentType
+from langchain_classic.agents import AgentType
 from langchain_core.tools import BaseTool
 
 from langchain_experimental.agents.agent_toolkits.matplotlib.base import (
