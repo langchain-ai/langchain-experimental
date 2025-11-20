@@ -744,6 +744,8 @@ class LLMGraphTransformer:
           function calling capabilities to handle structured output. Defaults to False.
         additional_instructions (str): Allows you to add additional instructions
           to the prompt without having to change the whole prompt.
+        structured_output_kwargs (Optional[dict], optional): The dict of keyword
+          arguments to pass to `with_structured_output`
 
     Example:
         .. code-block:: python
@@ -771,6 +773,7 @@ class LLMGraphTransformer:
         relationship_properties: Union[bool, List[str]] = False,
         ignore_tool_usage: bool = False,
         additional_instructions: str = "",
+        structured_output_kwargs: Optional[dict] = None,
     ) -> None:
         # Validate and check allowed relationships input
         self._relationship_type = validate_and_get_relationship_type(
@@ -781,10 +784,11 @@ class LLMGraphTransformer:
         self.allowed_relationships = allowed_relationships
         self.strict_mode = strict_mode
         self._function_call = not ignore_tool_usage
+        structured_output_kwargs = structured_output_kwargs or {}
         # Check if the LLM really supports structured output
         if self._function_call:
             try:
-                llm.with_structured_output(_Graph)
+                llm.with_structured_output(_Graph, **structured_output_kwargs)
             except NotImplementedError:
                 self._function_call = False
         if not self._function_call:
@@ -824,7 +828,9 @@ class LLMGraphTransformer:
                 relationship_properties,
                 self._relationship_type,
             )
-            structured_llm = llm.with_structured_output(schema, include_raw=True)
+            structured_llm = llm.with_structured_output(
+                schema, include_raw=True, **structured_output_kwargs
+            )
             prompt = prompt or get_default_prompt(additional_instructions)
             self.chain = prompt | structured_llm
 
