@@ -357,23 +357,43 @@ class PALChain(Chain):
                             )
 
                 if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
-                    if isinstance(node.left, ast.Constant) and isinstance(node.right, ast.Constant):
-                        if isinstance(node.left.value, str) and isinstance(node.right.value, str):
+                    if (
+                        isinstance(node.left, ast.Constant)
+                        and isinstance(node.right, ast.Constant)
+                    ):
+                        if (
+                            isinstance(node.left.value, str)
+                            and isinstance(node.right.value, str)
+                        ):
                             combined = node.left.value + node.right.value
                             if combined in DANGEROUS_SUBSCRIPT_STRINGS:
-                                raise ValueError(f"Found dangerous string concatenation: '{combined}' in code {code}")
-                    elif isinstance(node.left, ast.Str) and isinstance(node.right, ast.Str):
+                                raise ValueError(
+                                    f"Found dangerous string concatenation: "
+                                    f"'{combined}' in code {code}"
+                                )
+                    elif (
+                        isinstance(node.left, ast.Str)
+                        and isinstance(node.right, ast.Str)
+                    ):
                         combined = node.left.s + node.right.s
                         if combined in DANGEROUS_SUBSCRIPT_STRINGS:
-                            raise ValueError(f"Found dangerous string concatenation: '{combined}' in code {code}")
+                            raise ValueError(
+                                f"Found dangerous string concatenation: "
+                                f"'{combined}' in code {code}"
+                            )
 
                 # Check for f-strings and format strings
                 if isinstance(node, ast.JoinedStr):
                     for value in node.values:
                         if isinstance(value, ast.FormattedValue):
                             # Check if the expression uses dangerous patterns
-                            if hasattr(value.value, 'id') and value.value.id in DANGEROUS_SUBSCRIPT_STRINGS:
-                                raise ValueError(f"Found dangerous f-string pattern in code {code}")
+                            if (
+                                hasattr(value.value, "id")
+                                and value.value.id in DANGEROUS_SUBSCRIPT_STRINGS
+                            ):
+                                raise ValueError(
+                                    f"Found dangerous f-string pattern in code {code}"
+                                )
 
                 # Check for lambda expressions
                 if isinstance(node, ast.Lambda):
