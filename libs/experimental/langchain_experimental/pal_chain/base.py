@@ -357,13 +357,11 @@ class PALChain(Chain):
                             )
 
                 if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
-                    if (
-                        isinstance(node.left, ast.Constant)
-                        and isinstance(node.right, ast.Constant)
+                    if isinstance(node.left, ast.Constant) and isinstance(
+                        node.right, ast.Constant
                     ):
-                        if (
-                            isinstance(node.left.value, str)
-                            and isinstance(node.right.value, str)
+                        if isinstance(node.left.value, str) and isinstance(
+                            node.right.value, str
                         ):
                             combined = node.left.value + node.right.value
                             if combined in DANGEROUS_SUBSCRIPT_STRINGS:
@@ -371,9 +369,8 @@ class PALChain(Chain):
                                     f"Found dangerous string concatenation: "
                                     f"'{combined}' in code {code}"
                                 )
-                    elif (
-                        isinstance(node.left, ast.Str)
-                        and isinstance(node.right, ast.Str)
+                    elif isinstance(node.left, ast.Str) and isinstance(
+                        node.right, ast.Str
                     ):
                         combined = node.left.s + node.right.s
                         if combined in DANGEROUS_SUBSCRIPT_STRINGS:
