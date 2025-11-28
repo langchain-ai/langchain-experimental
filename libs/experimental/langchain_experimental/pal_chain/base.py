@@ -255,8 +255,7 @@ class PALChain(Chain):
             raise ValueError(f"Generated code is not valid python code: {code}")
         except TypeError:
             raise ValueError(
-                f"Generated code is expected to be a string, "
-                f"instead found {type(code)}"
+                f"Generated code is expected to be a string, instead found {type(code)}"
             )
         except OverflowError:
             raise ValueError(
