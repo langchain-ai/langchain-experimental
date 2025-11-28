@@ -395,11 +395,6 @@ class PALChain(Chain):
                 if isinstance(node, ast.Lambda):
                     raise ValueError(f"Lambda expressions not allowed in code {code}")
 
-                # Enhanced import checking
-                if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
-                    if not code_validations.allow_imports:
-                        raise ValueError(f"Imports not allowed in code {code}")
-
                 if (not code_validations.allow_imports) and (
                     isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom)
                 ):
