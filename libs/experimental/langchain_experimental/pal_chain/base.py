@@ -28,6 +28,13 @@ COMMAND_EXECUTION_FUNCTIONS = [
     "eval",
     "__import__",
     "compile",
+    "globals",
+    "setattr",
+    "locals",
+    "vars",
+    "getattr",
+    "dir",
+    "format",
 ]
 COMMAND_EXECUTION_ATTRIBUTES = [
     "__import__",
@@ -39,6 +46,29 @@ COMMAND_EXECUTION_ATTRIBUTES = [
     "__bases__",
     "__mro__",
     "__base__",
+]
+DANGEROUS_SUBSCRIPT_STRINGS = [
+    "__builtins__",
+    "__globals__",
+    "__import__",
+    "__subclasses__",
+    "__getattribute__",
+    "__code__",
+    "__bases__",
+    "__mro__",
+    "__base__",
+    "eval",
+    "exec",
+    "open",
+    "compile",
+    "system",
+    "globals",
+    "locals",
+    "vars",
+    "getattr",
+    "setattr",
+    "dir",
+    "format",
 ]
 
 
@@ -311,6 +341,48 @@ class PALChain(Chain):
                             f"Found illegal command execution function "
                             f"{node.func.attr} in code {code}"
                         )
+
+                if isinstance(node, ast.Subscript):
+                    if isinstance(node.slice, ast.Constant):
+                        if node.slice.value in DANGEROUS_SUBSCRIPT_STRINGS:
+                            raise ValueError(
+                                f"Found illegal subscript access to "
+                                f"'{node.slice.value}' in code {code}"
+                            )
+                    elif isinstance(node.slice, ast.Str):
+                        if node.slice.s in DANGEROUS_SUBSCRIPT_STRINGS:
+                            raise ValueError(
+                                f"Found illegal subscript access to "
+                                f"'{node.slice.s}' in code {code}"
+                            )
+
+                if isinstance(node, ast.BinOp) and isinstance(node.op, ast.Add):
+                    if isinstance(node.left, ast.Constant) and isinstance(node.right, ast.Constant):
+                        if isinstance(node.left.value, str) and isinstance(node.right.value, str):
+                            combined = node.left.value + node.right.value
+                            if combined in DANGEROUS_SUBSCRIPT_STRINGS:
+                                raise ValueError(f"Found dangerous string concatenation: '{combined}' in code {code}")
+                    elif isinstance(node.left, ast.Str) and isinstance(node.right, ast.Str):
+                        combined = node.left.s + node.right.s
+                        if combined in DANGEROUS_SUBSCRIPT_STRINGS:
+                            raise ValueError(f"Found dangerous string concatenation: '{combined}' in code {code}")
+
+                # Check for f-strings and format strings
+                if isinstance(node, ast.JoinedStr):
+                    for value in node.values:
+                        if isinstance(value, ast.FormattedValue):
+                            # Check if the expression uses dangerous patterns
+                            if hasattr(value.value, 'id') and value.value.id in DANGEROUS_SUBSCRIPT_STRINGS:
+                                raise ValueError(f"Found dangerous f-string pattern in code {code}")
+
+                # Check for lambda expressions
+                if isinstance(node, ast.Lambda):
+                    raise ValueError(f"Lambda expressions not allowed in code {code}")
+
+                # Enhanced import checking
+                if isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom):
+                    if not code_validations.allow_imports:
+                        raise ValueError(f"Imports not allowed in code {code}")
 
                 if (not code_validations.allow_imports) and (
                     isinstance(node, ast.Import) or isinstance(node, ast.ImportFrom)
