@@ -41,7 +41,12 @@ def case_insensitive_matching_strategy(
     for entity_type in deanonymizer_mapping:
         for anonymized, original in deanonymizer_mapping[entity_type].items():
             # Use regular expressions for case-insensitive matching and replacing
-            text = re.sub(anonymized, original, text, flags=re.IGNORECASE)
+            text = re.sub(
+                pattern=re.escape(pattern=anonymized),
+                repl=original,
+                string=text,
+                flags=re.IGNORECASE,
+            )
     return text
 
 
