@@ -122,9 +122,9 @@ class SemanticChunker(BaseDocumentTransformer):
         sentence_split_regex: Regex pattern for splitting text into sentences.
             Defaults to r"(?<=[.?!])\\s+".
         min_chunk_size: Minimum size for chunks. Smaller chunks are merged.
-        embedding_batch_size: Maximum number of sentences to embed in a single batch.
-            Useful for APIs with batch size limits (e.g., Qwen3) or to reduce memory usage.
-            If None, embeds all sentences at once. Defaults to None.
+        embedding_batch_size: Maximum number of sentences to embed in a batch.
+            Useful for APIs with batch size limits (e.g., Qwen3) or to reduce
+            memory usage. If None, embeds all at once. Defaults to None.
     """
 
     def __init__(
