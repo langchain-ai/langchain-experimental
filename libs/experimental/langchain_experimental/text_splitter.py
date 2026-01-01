@@ -106,18 +106,18 @@ class SemanticChunker(BaseDocumentTransformer):
 
     At a high level, this splits into sentences, then groups into groups of 3
     sentences, and then merges one that are similar in the embedding space.
-    
+
     Args:
         embeddings: Embeddings model to use for calculating semantic similarity.
         buffer_size: Number of sentences to combine. Defaults to 1.
-        add_start_index: Whether to include the starting position of each chunk 
+        add_start_index: Whether to include the starting position of each chunk
             in the metadata. Defaults to False.
         breakpoint_threshold_type: Method for determining split points.
             Options: "percentile", "standard_deviation", "interquartile", "gradient".
             Defaults to "percentile".
         breakpoint_threshold_amount: Threshold value for the breakpoint method.
             If None, uses default value for the selected method.
-        number_of_chunks: If specified, determines threshold to get approximately 
+        number_of_chunks: If specified, determines threshold to get approximately
             this many chunks.
         sentence_split_regex: Regex pattern for splitting text into sentences.
             Defaults to r"(?<=[.?!])\\s+".
@@ -221,19 +221,19 @@ class SemanticChunker(BaseDocumentTransformer):
             {"sentence": x, "index": i} for i, x in enumerate(single_sentences_list)
         ]
         sentences = combine_sentences(_sentences, self.buffer_size)
-        
+
         # Embed documents in batches if batch_size is specified
         combined_sentences = [x["combined_sentence"] for x in sentences]
-        
+
         if self.embedding_batch_size is not None:
             embeddings = []
             for i in range(0, len(combined_sentences), self.embedding_batch_size):
-                batch = combined_sentences[i:i + self.embedding_batch_size]
+                batch = combined_sentences[i : i + self.embedding_batch_size]
                 batch_embeddings = self.embeddings.embed_documents(batch)
                 embeddings.extend(batch_embeddings)
         else:
             embeddings = self.embeddings.embed_documents(combined_sentences)
-        
+
         for i, sentence in enumerate(sentences):
             sentence["combined_sentence_embedding"] = embeddings[i]
 
