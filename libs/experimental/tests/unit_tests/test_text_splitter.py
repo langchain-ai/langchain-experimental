@@ -76,3 +76,48 @@ def test_min_chunk_size(min_chunk_size: Optional[int], expected_chunks: int) -> 
     chunks = chunker.split_text(SAMPLE_TEXT)
 
     assert len(chunks) == expected_chunks
+
+
+def test_embedding_batch_size() -> None:
+    """Test that embedding_batch_size parameter works correctly."""
+    
+    class BatchTrackingMockEmbeddings(Embeddings):
+        def __init__(self) -> None:
+            self.batch_sizes: List[int] = []
+        
+        def embed_documents(self, texts: List[str]) -> List[List[float]]:
+            self.batch_sizes.append(len(texts))
+            return FAKE_EMBEDDINGS[: len(texts)]
+        
+        def embed_query(self, text: str) -> List[float]:
+            return [1.0, 2.0]
+    
+    # Test with batch_size=2
+    embeddings = BatchTrackingMockEmbeddings()
+    chunker = SemanticChunker(
+        embeddings,
+        breakpoint_threshold_type="percentile",
+        embedding_batch_size=2,
+    )
+    
+    chunks = chunker.split_text(SAMPLE_TEXT)
+    
+    # Verify that embeddings were called in batches
+    assert len(embeddings.batch_sizes) > 1
+    assert all(batch_size <= 2 for batch_size in embeddings.batch_sizes)
+    # Verify chunks are still produced correctly
+    assert len(chunks) > 0
+    
+    # Test without batch_size (all at once)
+    embeddings_no_batch = BatchTrackingMockEmbeddings()
+    chunker_no_batch = SemanticChunker(
+        embeddings_no_batch,
+        breakpoint_threshold_type="percentile",
+    )
+    
+    chunks_no_batch = chunker_no_batch.split_text(SAMPLE_TEXT)
+    
+    # Should only be called once
+    assert len(embeddings_no_batch.batch_sizes) == 1
+    # Should produce same number of chunks
+    assert len(chunks) == len(chunks_no_batch)
