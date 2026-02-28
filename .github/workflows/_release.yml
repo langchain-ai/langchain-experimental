@@ -19,6 +19,9 @@ on:
         default: false
         description: "Release from a non-master branch (danger!)"
 
+permissions:
+  contents: read
+
 env:
   PYTHON_VERSION: "3.11"
 
@@ -80,7 +83,9 @@ jobs:
       - build
     uses:
       ./.github/workflows/_test_release.yml
-    permissions: write-all
+    permissions:
+      contents: read
+      id-token: write
     with:
       working-directory: ${{ inputs.working-directory }}
       dangerous-nonmaster-release: ${{ inputs.dangerous-nonmaster-release }}
