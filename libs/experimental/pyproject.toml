@@ -34,7 +34,7 @@ typing = [
 ]
 dev = [
     "jupyter<2.0.0,>=1.0.0",
-    "setuptools<68.0.0,>=67.6.1",
+    "setuptools>=67.6.1,<79.0.0",
     "langchain-classic @ git+https://github.com/langchain-ai/langchain.git#subdirectory=libs/langchain",
     "langchain-core @ git+https://github.com/langchain-ai/langchain.git#subdirectory=libs/core",
     "langchain-community @ git+https://github.com/langchain-ai/langchain-community.git#subdirectory=libs/community",
