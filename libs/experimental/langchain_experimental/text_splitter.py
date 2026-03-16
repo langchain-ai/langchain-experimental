@@ -171,7 +171,6 @@ class SemanticChunker(BaseDocumentTransformer):
     def _calculate_sentence_distances(
         self, single_sentences_list: List[str]
     ) -> Tuple[List[float], List[dict]]:
-        
         sentence_embeddings = self.embeddings.embed_documents(single_sentences_list)
         _sentences = [
             {"sentence": x, "index": i, "embedding": sentence_embeddings[i]}
