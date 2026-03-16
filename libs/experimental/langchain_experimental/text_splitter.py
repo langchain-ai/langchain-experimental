@@ -54,34 +54,11 @@ def combine_sentences(sentences: List[dict], buffer_size: int = 1) -> List[dict]
 
 
 def calculate_cosine_distances(sentences: List[dict]) -> Tuple[List[float], List[dict]]:
-    """Calculate cosine distances between sentences.
-
-    Args:
-        sentences: List of sentences to calculate distances for.
-
-    Returns:
-        Tuple of distances and sentences.
-    """
     distances = []
+    # Use the distance_to_next value already calculated in _calculate_sentence_distances
     for i in range(len(sentences) - 1):
-        embedding_current = sentences[i]["combined_sentence_embedding"]
-        embedding_next = sentences[i + 1]["combined_sentence_embedding"]
-
-        # Calculate cosine similarity
-        similarity = cosine_similarity([embedding_current], [embedding_next])[0][0]
-
-        # Convert to cosine distance
-        distance = 1 - similarity
-
-        # Append cosine distance to the list
+        distance = sentences[i].get("distance_to_next", 0.0)
         distances.append(distance)
-
-        # Store distance in the dictionary
-        sentences[i]["distance_to_next"] = distance
-
-    # Optionally handle the last sentence
-    # sentences[-1]['distance_to_next'] = None  # or a default value
-
     return distances, sentences
 
 
@@ -191,22 +168,30 @@ class SemanticChunker(BaseDocumentTransformer):
 
         return cast(float, np.percentile(distances, y))
 
-    def _calculate_sentence_distances(
-        self, single_sentences_list: List[str]
-    ) -> Tuple[List[float], List[dict]]:
-        """Split text into multiple components."""
-
+    def _calculate_sentence_distances(self, single_sentences_list: List[str]) -> Tuple[List[float], List[dict]]:
+        
+        sentence_embeddings = self.embeddings.embed_documents(single_sentences_list)
         _sentences = [
-            {"sentence": x, "index": i} for i, x in enumerate(single_sentences_list)
+            {"sentence": x, "index": i, "embedding": sentence_embeddings[i]}
+            for i, x in enumerate(single_sentences_list)
         ]
-        sentences = combine_sentences(_sentences, self.buffer_size)
-        embeddings = self.embeddings.embed_documents(
-            [x["combined_sentence"] for x in sentences]
-        )
-        for i, sentence in enumerate(sentences):
-            sentence["combined_sentence_embedding"] = embeddings[i]
 
-        return calculate_cosine_distances(sentences)
+        # Compare non-overlapping windows at every boundary (between $i$ and $i+1$)
+        for i in range(len(_sentences) - 1):
+            # Pre-Context (Clamping)
+            pre_start = i - self.buffer_size + 1
+            pre_indices = [max(0, j) for j in range(pre_start, i + 1)]
+            pre_mean = np.mean([_sentences[idx]["embedding"] for idx in pre_indices], axis=0)
+
+            # Post-Context (Clamping)
+            post_end = i + 1 + self.buffer_size
+            post_indices = [min(len(_sentences) - 1, j) for j in range(i + 1, post_end)]
+            post_mean = np.mean([_sentences[idx]["embedding"] for idx in post_indices], axis=0)
+
+            similarity = cosine_similarity([pre_mean], [post_mean])[0][0]
+            _sentences[i]["distance_to_next"] = 1 - similarity
+
+        return calculate_cosine_distances(_sentences)
 
     def _get_single_sentences_list(self, text: str) -> List[str]:
         return re.split(self.sentence_split_regex, text)
