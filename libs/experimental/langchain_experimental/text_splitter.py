@@ -168,7 +168,9 @@ class SemanticChunker(BaseDocumentTransformer):
 
         return cast(float, np.percentile(distances, y))
 
-    def _calculate_sentence_distances(self, single_sentences_list: List[str]) -> Tuple[List[float], List[dict]]:
+    def _calculate_sentence_distances(
+        self, single_sentences_list: List[str]
+    ) -> Tuple[List[float], List[dict]]:
         
         sentence_embeddings = self.embeddings.embed_documents(single_sentences_list)
         _sentences = [
@@ -181,12 +183,16 @@ class SemanticChunker(BaseDocumentTransformer):
             # Pre-Context (Clamping)
             pre_start = i - self.buffer_size + 1
             pre_indices = [max(0, j) for j in range(pre_start, i + 1)]
-            pre_mean = np.mean([_sentences[idx]["embedding"] for idx in pre_indices], axis=0)
+            pre_mean = np.mean(
+                [_sentences[idx]["embedding"] for idx in pre_indices], axis=0
+            )
 
             # Post-Context (Clamping)
             post_end = i + 1 + self.buffer_size
             post_indices = [min(len(_sentences) - 1, j) for j in range(i + 1, post_end)]
-            post_mean = np.mean([_sentences[idx]["embedding"] for idx in post_indices], axis=0)
+            post_mean = np.mean(
+                [_sentences[idx]["embedding"] for idx in post_indices], axis=0
+            )
 
             similarity = cosine_similarity([pre_mean], [post_mean])[0][0]
             _sentences[i]["distance_to_next"] = 1 - similarity
