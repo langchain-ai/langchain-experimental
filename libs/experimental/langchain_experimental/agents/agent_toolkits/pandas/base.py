@@ -168,7 +168,7 @@ def create_pandas_dataframe_agent(
     include_df_in_prompt: Optional[bool] = True,
     number_of_head_rows: int = 5,
     extra_tools: Sequence[BaseTool] = (),
-    engine: Literal["pandas", "modin"] = "pandas",
+    engine: Literal["pandas", "bodo", "modin"] = "pandas",
     allow_dangerous_code: bool = False,
     **kwargs: Any,
 ) -> AgentExecutor:
@@ -211,7 +211,7 @@ def create_pandas_dataframe_agent(
         number_of_head_rows: Number of initial rows to include in prompt if
             include_df_in_prompt is True.
         extra_tools: Additional tools to give to agent on top of a PythonAstREPLTool.
-        engine: One of "modin" or "pandas". Defaults to "pandas".
+        engine: One of "bodo" or "modin" or "pandas". Defaults to "pandas".
         allow_dangerous_code: bool, default False
             This agent relies on access to a python repl tool which can execute
             arbitrary code. This can be dangerous and requires a specially sandboxed
@@ -256,13 +256,17 @@ def create_pandas_dataframe_agent(
             "https://python.langchain.com/docs/security/"
         )
     try:
-        if engine == "modin":
+        if engine == "bodo":
+            import bodo.pandas as bd
+            import pandas as pd
+        elif engine == "modin":
             import modin.pandas as pd
         elif engine == "pandas":
             import pandas as pd
         else:
             raise ValueError(
-                f"Unsupported engine {engine}. It must be one of 'modin' or 'pandas'."
+                f"Unsupported engine {engine}. "
+                "It must be one of 'bodo' or 'modin' or 'pandas'."
             )
     except ImportError as e:
         raise ImportError(
@@ -275,6 +279,15 @@ def create_pandas_dataframe_agent(
     for _df in df if isinstance(df, list) else [df]:
         if not isinstance(_df, pd.DataFrame):
             raise ValueError(f"Expected pandas DataFrame, got {type(_df)}")
+
+    # Convert dataframes to Bodo DataFrames if engine is set to "bodo"
+    if engine == "bodo":
+        if isinstance(df, list):
+            df = [
+                bd.from_pandas(d) if not isinstance(d, bd.DataFrame) else d for d in df
+            ]
+        else:
+            df = bd.from_pandas(df) if not isinstance(df, bd.DataFrame) else df
 
     if input_variables:
         kwargs = kwargs or {}
