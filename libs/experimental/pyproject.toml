@@ -40,7 +40,7 @@ dev = [
     "langchain-community @ git+https://github.com/langchain-ai/langchain-community.git#subdirectory=libs/community",
 ]
 test = [
-    "pytest<8.0.0,>=7.3.0",
+    "pytest>=7.3.0,<10.0.0",
     "pytest-asyncio<1.0.0,>=0.20.3",
     "langchain-classic @ git+https://github.com/langchain-ai/langchain.git#subdirectory=libs/langchain",
     "langchain-core @ git+https://github.com/langchain-ai/langchain.git#subdirectory=libs/core",
